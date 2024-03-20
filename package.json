@@ -1,15 +1,24 @@
 {
   "name": "dancinglinksjs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "js implementation of Knuth's Algorithm X",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "typescript",
+    "Knuth",
+    "DLX",
+    "Algorithm X",
+    "Dancing Links"
+  ],
+  "author": "calebsg225",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
     "tsx": "^4.7.1",
     "typescript": "^5.4.3"
   }
