@@ -1,1 +1,1 @@
-# JavaScript Implamentation of Knuth's Algorithm X
+# JavaScript Implementation of Knuth's Algorithm X
