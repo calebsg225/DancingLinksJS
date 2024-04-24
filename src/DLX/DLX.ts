@@ -4,6 +4,13 @@ class DancingLinks {
   test = (stringToConvert: string): number => {
     return +stringToConvert;
   }
+
+  cover = () => {}
+
+  uncover = () => {}
+
+  search = () => {}
+  
 }
 
 export default DancingLinks;
