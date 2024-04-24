@@ -1,3 +1,15 @@
+class MinHeap {
+  heap: number[];
+  constructor(values: number[]) {
+    this.heap = [];
+  }
+  private buildHeap = () => {}
+  extractMin = () => {}
+  insert = () => {}
+  private shiftUp = () => {}
+  private shiftDown = () => {}
+}
+
 class DancingLinks {
   constructor() {}
 
@@ -10,7 +22,7 @@ class DancingLinks {
   uncover = () => {}
 
   search = () => {}
-  
+
 }
 
 export default DancingLinks;
