@@ -1,4 +1,4 @@
-import Convert from "./DLX/Conversion";
+import Convert from "./DLX/Convert";
 import DancingLinks from "./DLX/DLX";
 
 export { Convert, DancingLinks }

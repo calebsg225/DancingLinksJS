@@ -33,7 +33,6 @@ class MinHeap {
     const r = 2*i + 2;
 
     let s = i;
-
     if (this.heap[l] < this.heap[s]) s = l;
     if (r < this.heap.length && this.heap[r] < this.heap[s]) s = r;
 
@@ -42,8 +41,6 @@ class MinHeap {
       this.shiftDown(s);
     }
   }
-
-  // swap values at two indices of this.heap
   private swap = (i: number, j: number): void => {
     [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
   }

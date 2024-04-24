@@ -1,4 +1,5 @@
 import MinHeap from "../utils/MinHeap";
+import { NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
   constructor() {}
@@ -12,6 +13,12 @@ class DancingLinks {
   uncover = () => {}
 
   search = () => {}
+
+  // find all possible solutions to exact cover problem
+  findAll = () => {}
+
+  // find one possible solution to exact cover problem
+  findOne = () => {}
 
 }
 
