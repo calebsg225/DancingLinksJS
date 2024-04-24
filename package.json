@@ -1,10 +1,14 @@
 {
-  "name": "dancinglinksjs",
+  "name": "@calebsg225/dlxjs",
   "version": "1.0.0",
-  "description": "js implementation of Knuth's Algorithm X",
-  "main": "src/index.js",
+  "description": "javascript/typescript implementation of Knuth's Algorithm X",
+  "main": "src/index.ts",
   "scripts": {
     "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calebsg225/DancingLinksJS"
   },
   "keywords": [
     "typescript",

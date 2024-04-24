@@ -1,14 +1,4 @@
-class MinHeap {
-  heap: number[];
-  constructor(values: number[]) {
-    this.heap = [];
-  }
-  private buildHeap = () => {}
-  extractMin = () => {}
-  insert = () => {}
-  private shiftUp = () => {}
-  private shiftDown = () => {}
-}
+import MinHeap from "../utils/MinHeap";
 
 class DancingLinks {
   constructor() {}
@@ -25,4 +15,4 @@ class DancingLinks {
 
 }
 
-export default DancingLinks;
+export default new DancingLinks;
