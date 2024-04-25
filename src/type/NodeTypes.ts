@@ -1,7 +1,7 @@
 type NodeType = 'header' | 'spacer' | 'item' | 'first';
 
 type NodeTypes = {
-  nodeType?: NodeType;
+  nodeType: NodeType;
   columnCount?: number;
   upNode?: number;
   downNode?: number;
