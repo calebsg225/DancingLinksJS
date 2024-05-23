@@ -2,6 +2,7 @@ import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/
 
 class Convert {
 
+  // converts matrix of 1's and 0's to dlx data structure
   fromMatrix = (matrix: (0|1)[][]) => {
     if (!this.verifyMatrix(matrix)) return false;
     
@@ -46,6 +47,7 @@ class Convert {
     return nodes;
   }
   
+  // converts data structure to matrix
   toMatrix = (nodes: NodeTypes[]) => {}
   
   private verifyMatrix = (matrix: (0|1)[][]): boolean => {

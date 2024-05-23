@@ -1,11 +1,12 @@
 import MinHeap from "../utils/MinHeap";
-import { NodeTypes } from "../type/NodeTypes";
+import { HeaderNode, NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
   private activeColumns: Set<number>;
   private instructionStack: number[]; // keep track of covering order. To reverse, unstack.
   private nodes: NodeTypes[];
   private colCount: number;
+  private currentSolution: number[];
   private solutions: [];
   constructor() {
   }
@@ -14,22 +15,44 @@ class DancingLinks {
     return +stringToConvert;
   }
 
-  private cover = () => {}
+  // covers an inputed item
+  private coverItem = (headerItemToCover: number) => {
+    const header = this.nodes[headerItemToCover];
+    let p = header.downNode;
+    while (p != headerItemToCover) {
+      this.hide(p);
+      this.nodes[p].downNode;
+    }
+    const l = header.leftNode;
+    const r = header.rightNode;
+    header.rightNode = l;
+    header.leftNode = r;
+    this.activeColumns.delete(headerItemToCover);
+  }
 
-  private uncover = () => {}
+  // uncovers an inputed item
+  private uncoverItem = () => {}
 
-  private hide = () => {}
+  // hides all nodes on the same option level as the inputed node from their respective items
+  private hide = (nodeToHide: number) => {
+    const node = this.nodes[nodeToHide];
+    
+  }
 
+  // unhides all nodes of a given option level
   private unhide = () => {}
 
-  private search = () => {}
+  private search = () => {
+  }
 
   private getMinCol = (): number => {
-    let min = -Infinity;
-    this.activeColumns.forEach((activeOption) => {
-      min = Math.min(min, this.nodes[activeOption].columnCount);
+    let minOptionCountIndex = 1;
+    this.activeColumns.forEach((activeItem) => {
+      if (this.nodes[activeItem].columnCount < this.nodes[minOptionCountIndex].columnCount) {
+        minOptionCountIndex = activeItem;
+      }
     });
-    return min;
+    return minOptionCountIndex;
   }
 
   private reset = () => {
@@ -37,6 +60,7 @@ class DancingLinks {
     this.instructionStack = [];
     this.activeColumns = new Set();
     this.nodes = [];
+    this.currentSolution = [];
     this.solutions = [];
   }
 
@@ -55,6 +79,11 @@ class DancingLinks {
   findOne = (nodes: NodeTypes[]) => {
     this.nodes = nodes;
     this.reset();
+    const curItemIndex = this.getMinCol();
+    while (!this.solutions.length) {
+      const curOptionRow = this.nodes[curItemIndex].downNode;
+      this.search();
+    }
   }
 
 }
