@@ -19,10 +19,14 @@ class DancingLinks {
   private coverItem = (headerItemToCover: number) => {
     const header = this.nodes[headerItemToCover];
     let p = header.downNode;
+
+    // hide all options from headers
     while (p != headerItemToCover) {
       this.hide(p);
       this.nodes[p].downNode;
     }
+
+    // hide header node from header row
     const l = header.leftNode;
     const r = header.rightNode;
     header.rightNode = l;
@@ -35,8 +39,22 @@ class DancingLinks {
 
   // hides all nodes on the same option level as the inputed node from their respective items
   private hide = (nodeToHide: number) => {
-    const node = this.nodes[nodeToHide];
-    
+    let node = nodeToHide + 1;
+    while (nodeToHide !== node) {
+      const header = this.nodes[node].headerNode;
+      const upNode = this.nodes[node].upNode;
+      const downNode = this.nodes[node].downNode;
+      // cycle back around if the current node is a spacer
+      if (this.nodes[node].nodeType === 'spacer') node = upNode;
+      else {
+        // hide selected node from its header
+        this.nodes[upNode].downNode = downNode;
+        this.nodes[downNode].upNode = upNode;
+
+        this.nodes[header].columnCount--;
+        node++;
+      }
+    }
   }
 
   // unhides all nodes of a given option level
