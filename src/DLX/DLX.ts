@@ -18,24 +18,39 @@ class DancingLinks {
   // covers an inputed item
   private coverItem = (headerItemToCover: number) => {
     const header = this.nodes[headerItemToCover];
-    let p = header.downNode;
-
+    
     // hide all options from headers
+    let p = header.downNode;
     while (p != headerItemToCover) {
       this.hide(p);
-      this.nodes[p].downNode;
+      p = this.nodes[p].downNode;
     }
 
     // hide header node from header row
     const l = header.leftNode;
     const r = header.rightNode;
-    header.rightNode = l;
-    header.leftNode = r;
+    this.nodes[l].rightNode = r;
+    this.nodes[r].leftNode = l;
     this.activeColumns.delete(headerItemToCover);
   }
 
   // uncovers an inputed item
   private uncoverItem = (headerItemToUncover: number) => {
+    const header = this.nodes[headerItemToUncover];
+
+    // unhide header node from header row
+    const l = header.leftNode;
+    const r = header.rightNode;
+    this.nodes[l].rightNode = headerItemToUncover;
+    this.nodes[r].leftNode = headerItemToUncover;
+    this.activeColumns.add(headerItemToUncover);
+
+    // unhide all options connected to header
+    let p = header.upNode;
+    while (p != headerItemToUncover) {
+      this.unhide(p);
+      p = this.nodes[p].upNode;
+    }
   }
 
   // hides all nodes on the same option level as the inputed node from their respective items
