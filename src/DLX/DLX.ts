@@ -2,12 +2,13 @@ import MinHeap from "../utils/MinHeap";
 import { HeaderNode, NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
-  private activeColumns: Set<number>;
+  private activeItems: Set<number>;
   private instructionStack: number[]; // keep track of covering order. To reverse, unstack.
   private nodes: NodeTypes[];
-  private colCount: number;
+  private itemCount: number;
   private currentSolution: number[];
-  private solutions: [];
+  private solutions: number[][];
+  private lastSpacer: number;
   constructor() {
   }
 
@@ -31,7 +32,7 @@ class DancingLinks {
     const r = header.rightNode;
     this.nodes[l].rightNode = r;
     this.nodes[r].leftNode = l;
-    this.activeColumns.delete(headerItemToCover);
+    this.activeItems.delete(headerItemToCover);
   }
 
   // uncovers an inputed item
@@ -43,7 +44,7 @@ class DancingLinks {
     const r = header.rightNode;
     this.nodes[l].rightNode = headerItemToUncover;
     this.nodes[r].leftNode = headerItemToUncover;
-    this.activeColumns.add(headerItemToUncover);
+    this.activeItems.add(headerItemToUncover);
 
     // unhide all options connected to header
     let p = header.upNode;
@@ -98,7 +99,7 @@ class DancingLinks {
 
   private getMinCol = (): number => {
     let minOptionCountIndex = 1;
-    this.activeColumns.forEach((activeItem) => {
+    this.activeItems.forEach((activeItem) => {
       if (this.nodes[activeItem].columnCount < this.nodes[minOptionCountIndex].columnCount) {
         minOptionCountIndex = activeItem;
       }
@@ -107,24 +108,79 @@ class DancingLinks {
   }
 
   private reset = () => {
-    this.colCount = 0;
+    this.itemCount = 0;
     this.instructionStack = [];
-    this.activeColumns = new Set();
+    this.activeItems = new Set();
     this.nodes = [];
     this.currentSolution = [];
     this.solutions = [];
   }
 
-  private setup = () => {
-    this.colCount = this.nodes[0].leftNode;
-    this.activeColumns = new Set(Array.from(Array(this.colCount), (_, i) => i + 1));
+  private setup = (nodes: NodeTypes[]) => {
+    this.nodes = nodes;
+    this.itemCount = this.nodes[0].leftNode;
+    this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
+    this.lastSpacer = nodes.length - 1;
   }
+
+  /*
+  X1: initialize
+    n = num items
+    z = last spacer address
+
+  X2: level l
+    if no more active items, ( add to the solution, if l=0 return solutions, else lower l, goto X6 )
+
+    select an uncovered item (possibly one with the lowest number of available options)
+
+    cover(i)
+    xl = downlink of node i;
+
+  X5: try xl
+    if xl = i (meaning no other options), uncover(i), if l=0 return solutions, else lower l, goto X6
+    cover items other than i in option containing xl then increase a level and go to X2
+
+  X6: try again
+    uncover items other than i in option containing xl, goto X5;
+  */
 
   // find all possible solutions to exact cover problem
   findAll = (nodes: NodeTypes[]) => {
-    this.nodes = nodes;
-    this.reset();
+    this.setup(nodes);
+    let level = 0;
+
+    while (true) {
+      // X2
+      if (!this.activeItems.size) {
+        this.solutions.push(this.currentSolution);
+        if (level === 0) {
+          return this.solutions;
+        } else {
+          level--;
+          this.uncoverItemsInOption()
+        }
+      } else {
+        // select uncovered item
+        // cover selected item
+        // xl = downlink of node i
+      }
+      // X5
+      while ('xl = i') {
+        // uncover(i)
+        if (level === 0) {
+          return this.solutions;
+        } else {
+          level--;
+          this.uncoverItemsInOption()
+        }
+      }
+
+      // cover items other than i in option containing xl
+      // increase level
+    }
   }
+
+  private uncoverItemsInOption = () => {}
 
   // find one possible solution to exact cover problem
   findOne = (nodes: NodeTypes[]) => {
