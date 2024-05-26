@@ -4,7 +4,7 @@ class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
   fromMatrix = (matrix: (0|1)[][]) => {
-    if (!this.verifyMatrix(matrix)) return false;
+    if (!this.verifyMatrix(matrix)) return [];
     
     const colCount = matrix[0].length; // number of columns in the initial matrix
     const rowCount = matrix.length; // number of rows in the initial matrix

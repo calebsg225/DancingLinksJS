@@ -35,7 +35,8 @@ class DancingLinks {
   }
 
   // uncovers an inputed item
-  private uncoverItem = () => {}
+  private uncoverItem = (headerItemToUncover: number) => {
+  }
 
   // hides all nodes on the same option level as the inputed node from their respective items
   private hide = (nodeToHide: number) => {
@@ -58,7 +59,24 @@ class DancingLinks {
   }
 
   // unhides all nodes of a given option level
-  private unhide = () => {}
+  private unhide = (nodeToUnhide: number) => {
+    let node = nodeToUnhide - 1;
+    while (nodeToUnhide != node) {
+      const header = this.nodes[node].headerNode;
+      const upNode = this.nodes[node].upNode;
+      const downNode = this.nodes[node].downNode;
+      // cycle back around if the current node is a spacer
+      if (this.nodes[node].nodeType === 'spacer') node = downNode;
+      else {
+        // unhide selected node from its header
+        this.nodes[upNode].downNode = node;
+        this.nodes[downNode].upNode = node;
+
+        this.nodes[header].columnCount++;
+        node--;
+      }
+    }
+  }
 
   private search = () => {
   }
