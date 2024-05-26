@@ -3,7 +3,6 @@ import { HeaderNode, NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
   private activeItems: Set<number>;
-  private instructionStack: number[]; // keep track of covering order. To reverse, unstack.
   private nodes: NodeTypes[];
   private itemCount: number;
   private currentSolution: number[];
@@ -94,9 +93,6 @@ class DancingLinks {
     }
   }
 
-  private search = () => {
-  }
-
   private getMinCol = (): number => {
     let minOptionCountIndex = 1;
     this.activeItems.forEach((activeItem) => {
@@ -109,7 +105,6 @@ class DancingLinks {
 
   private reset = () => {
     this.itemCount = 0;
-    this.instructionStack = [];
     this.activeItems = new Set();
     this.nodes = [];
     this.currentSolution = [];
@@ -176,22 +171,12 @@ class DancingLinks {
       }
 
       // cover items other than i in option containing xl
-      // increase level
+      level++;
     }
   }
 
+  // X6
   private uncoverItemsInOption = () => {}
-
-  // find one possible solution to exact cover problem
-  findOne = (nodes: NodeTypes[]) => {
-    this.nodes = nodes;
-    this.reset();
-    const curItemIndex = this.getMinCol();
-    while (!this.solutions.length) {
-      const curOptionRow = this.nodes[curItemIndex].downNode;
-      this.search();
-    }
-  }
 
 }
 
