@@ -8,6 +8,8 @@ class DancingLinks {
   private currentSolution: number[];
   private solutions: number[][];
   private lastSpacer: number;
+  private optionCount: number;
+  private minItemHeaderIndex: number;
   constructor() {
   }
 
@@ -93,14 +95,13 @@ class DancingLinks {
     }
   }
 
-  private getMinCol = (): number => {
-    let minOptionCountIndex = 1;
+  private setMinItemHeader = () => {
+    this.minItemHeaderIndex = 1;
     this.activeItems.forEach((activeItem) => {
-      if (this.nodes[activeItem].columnCount < this.nodes[minOptionCountIndex].columnCount) {
-        minOptionCountIndex = activeItem;
+      if (this.nodes[activeItem].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
+        this.minItemHeaderIndex = activeItem;
       }
     });
-    return minOptionCountIndex;
   }
 
   private reset = () => {
@@ -116,9 +117,22 @@ class DancingLinks {
     this.itemCount = this.nodes[0].leftNode;
     this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
     this.lastSpacer = nodes.length - 1;
+    this.currentSolution = [];
+    this.solutions = [];
+    this.setOptionCount();
+  }
+
+  private setOptionCount = () => {
+    this.optionCount = 1;
+    let i = this.itemCount + 1;
+    while (i < this.lastSpacer) {
+      i = this.nodes[i].downNode + 1;
+      this.optionCount++;
+    }
   }
 
   /*
+        SIMPLIFIED ALGORITHM X SUDO CODE FROM SUDO CODE IN KNUTHS PAPER
   X1: initialize
     n = num items
     z = last spacer address
@@ -139,44 +153,72 @@ class DancingLinks {
     uncover items other than i in option containing xl, goto X5;
   */
 
+
   // find all possible solutions to exact cover problem
+  // translated algorithm x sudo code to working javascript
   findAll = (nodes: NodeTypes[]) => {
     this.setup(nodes);
     let level = 0;
 
     while (true) {
-      // X2
+      // X2 in sudo code
       if (!this.activeItems.size) {
         this.solutions.push(this.currentSolution);
         if (level === 0) {
           return this.solutions;
         } else {
           level--;
-          this.uncoverItemsInOption()
+          this.currentSolution.pop();
+          this.uncoverItemsInOption(level);
         }
       } else {
-        // select uncovered item
-        // cover selected item
-        // xl = downlink of node i
+        this.setMinItemHeader();
+        this.coverItem(this.minItemHeaderIndex);
+        this.currentSolution.push(this.nodes[this.minItemHeaderIndex].downNode);
       }
-      // X5
-      while ('xl = i') {
-        // uncover(i)
+
+      // X5 in sudo code
+      while (this.currentSolution[level] === this.minItemHeaderIndex) {
+        this.uncoverItem(this.minItemHeaderIndex);
         if (level === 0) {
           return this.solutions;
         } else {
           level--;
-          this.uncoverItemsInOption()
+          this.currentSolution.pop();
+          this.uncoverItemsInOption(level);
         }
       }
 
       // cover items other than i in option containing xl
+      const xl = this.currentSolution[level];
+      let p = xl + 1;
+      while (p != xl) {
+        if (this.nodes[p].nodeType === 'spacer') {p = this.nodes[p].upNode}
+        else {
+          this.coverItem(this.nodes[p].headerNode);
+          p++;
+        }
+      }
+
       level++;
     }
   }
 
-  // X6
-  private uncoverItemsInOption = () => {}
+  // X6 in sudo code
+  private uncoverItemsInOption = (level: number) => {
+    const xl = this.currentSolution[level];
+    let p = xl - 1;
+    while (p != xl) {
+      if (this.nodes[p].nodeType === 'spacer') {p = this.nodes[p].downNode}
+      else {
+        this.uncoverItem(this.nodes[p].headerNode);
+        p--;
+      }
+    }
+
+    this.minItemHeaderIndex = this.nodes[xl].headerNode;
+    this.currentSolution[level] = this.nodes[xl].downNode;
+  }
 
 }
 

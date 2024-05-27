@@ -27,7 +27,7 @@ class FirstNode {
   constructor(rightNode: number, leftNode: number) {
     this.rightNode = rightNode;
     this.leftNode = leftNode;
-    this.nodeType = 'first';
+    this.nodeType = 'spacer';
   }
 }
 
