@@ -65,8 +65,44 @@ class Convert {
 
     return { matrix: langfordMatrix, converted: this.fromMatrix(langfordMatrix) };
   }
+
+  toLangfordPairs = (matrix: (0|1)[][], solutions: Set<number>[]) => {
+    const langfordPairLength = matrix[0].length * (2/3);
+
+    const langfordPairs: number[][] = [];
+
+    for (const solution of solutions) {
+      const langfordPair = new Array(langfordPairLength);
+
+      solution.forEach(v => {
+        let leftIndex = 0;
+        let rightIndex = 0;
+        while (leftIndex < langfordPairLength) {
+          if (matrix[v][leftIndex]) {
+            rightIndex++;
+            while (!matrix[v][rightIndex]) {
+              rightIndex++;
+            }
+            break;
+          }
+          leftIndex++;
+          rightIndex++;
+        }
+        const dist = rightIndex - leftIndex - 1;
+        langfordPair[leftIndex] = dist;
+        langfordPair[rightIndex] = dist;
+      });
+
+      langfordPairs.push(langfordPair);
+
+    }
+    return langfordPairs;
+  }
   
-  fromNQueens = (queenCount: number) => {}
+  fromNQueens = (queenCount: number): { matrix: (1|0)[][], converted: NodeTypes[] } => {
+    if (queenCount < 1) return { matrix: [], converted: [] }
+    const nQueenMatrix: (0|1)[][] = [];
+  }
 
   // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
   // string.length === n^4, 2 <= n <= 5
