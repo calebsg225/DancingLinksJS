@@ -10,7 +10,6 @@ class DancingLinks {
   private lastSpacer: number;
   private optionCount: number;
   private minItemHeaderIndex: number;
-  private spacerIndices: Map<number, number>;
   constructor() {
     this.reset();
   }
@@ -31,7 +30,6 @@ class DancingLinks {
     this.itemCount = 0;
     this.activeItems = new Set();
     this.solutions = [];
-    this.spacerIndices = new Map();
     this.currentSolution = [];
   }
 
@@ -49,13 +47,9 @@ class DancingLinks {
   // also makes note of all the spacers with this.spacerIndices
   private setOptionCount = () => {
     this.optionCount = 1;
-    let j = 0;
     let i = this.itemCount + 1;
-    this.spacerIndices.set(i, j);
     while (i < this.lastSpacer) {
-      j++;
       i = this.nodes[i].downNode + 1;
-      this.spacerIndices.set(i, j);
       this.optionCount++;
     }
   }
@@ -141,7 +135,6 @@ class DancingLinks {
   // find all possible solutions to exact cover problem
   // translated algorithm x sudo code from knuths paper to working javascript
   find = (nodes: NodeTypes[], justOne: boolean = false) => {
-
     // X1
     this.setup(nodes);
     let level = 0;
@@ -149,7 +142,7 @@ class DancingLinks {
     while (true) {
       // X2
       if (!this.activeItems.size) {
-        this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.spacerIndices.get(v-1))));
+        this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
         if (justOne) return this.solutions;
         // X8 START
         if (level === 0) {
@@ -158,7 +151,6 @@ class DancingLinks {
           return solutions;
         } else {
           level--;
-          this.currentSolution.pop();
           this.uncoverItemsInOption(level);
         }
         // X8 END
@@ -195,7 +187,6 @@ class DancingLinks {
           p++;
         }
       }
-
       level++;
     }
   }

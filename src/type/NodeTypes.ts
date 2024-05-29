@@ -8,6 +8,7 @@ type NodeTypes = {
   leftNode?: number;
   rightNode?: number;
   headerNode?: number;
+  option?: number;
 }
 
 class Node {
@@ -33,10 +34,12 @@ class FirstNode {
 
 class ItemNode extends Node {
   headerNode: number;
-  constructor(headerNode: number, ...args: ConstructorParameters<typeof Node>) {
+  option: number;
+  constructor(headerNode: number, option: number, ...args: ConstructorParameters<typeof Node>) {
     super(...args);
     this.nodeType = 'item';
     this.headerNode = headerNode;
+    this.option = option;
   }
 }
 class SpacerNode extends Node {

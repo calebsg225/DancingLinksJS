@@ -27,13 +27,14 @@ class Convert {
       nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
       const spacerIndex = nodes.length - 1;
       
+      // create ItemNodes belonging to option row
       for (let j = 0; j < colCount; j++) {
         if (!matrix[i][j]) continue; // skip if value is 0
         nodes[spacerIndex].downNode = nodes.length; // update [spacer] down pointer
         
         nodes[nodes[j+1].upNode].downNode = nodes.length; // update [header] down pointer
         
-        nodes.push(new ItemNode(j+1, nodes[j+1].upNode, j+1)); // add new [item] node to nodes array
+        nodes.push(new ItemNode(j+1, i, nodes[j+1].upNode, j+1)); // add new [item] node to nodes array
         
         nodes[j+1].columnCount++; // increase [header] column count
         nodes[j+1].upNode = nodes.length - 1; // update [header] up pointer
@@ -46,9 +47,6 @@ class Convert {
     
     return nodes;
   }
-  
-  // converts data structure to matrix
-  toMatrix = (nodes: NodeTypes[]) => {}
   
   private verifyMatrix = (matrix: (0|1)[][]): boolean => {
     if (!matrix.length) return false;
