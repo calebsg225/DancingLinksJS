@@ -14,8 +14,44 @@ class DancingLinks {
   constructor() {
   }
 
-  test = (stringToConvert: string): number => {
-    return +stringToConvert;
+  // sets this.minItemHeaderIndex to the active item with the least amount of remaining options
+  private setMinItemHeader = () => {
+    this.minItemHeaderIndex = this.nodes[0].rightNode;
+    this.activeItems.forEach((activeItem) => {
+      if (this.nodes[activeItem].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
+        this.minItemHeaderIndex = activeItem;
+      }
+    });
+  }
+
+  // clean slate for next computation
+  private reset = () => {
+    this.itemCount = 0;
+    this.activeItems = new Set();
+    this.nodes = [];
+    this.currentSolution = [];
+    this.solutions = [];
+    this.spacerIndices = [];
+  }
+
+  // fill in required data for computation
+  private setup = (nodes: NodeTypes[]) => {
+    this.nodes = nodes;
+    this.itemCount = this.nodes[0].leftNode;
+    this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
+    this.lastSpacer = nodes.length - 1;
+    this.setOptionCount();
+    this.currentSolution = new Array(this.optionCount + 1);
+  }
+
+  // set this.optionCount to the number of options available in the dataset
+  private setOptionCount = () => {
+    this.optionCount = 1;
+    let i = this.itemCount + 1;
+    while (i < this.lastSpacer) {
+      i = this.nodes[i].downNode + 1;
+      this.optionCount++;
+    }
   }
 
   // covers an inputed item
@@ -96,44 +132,6 @@ class DancingLinks {
     }
   }
 
-  // sets this.minItemHeaderIndex to the active item with the least amount of remaining options
-  private setMinItemHeader = () => {
-    this.minItemHeaderIndex = this.nodes[0].rightNode;
-    this.activeItems.forEach((activeItem) => {
-      if (this.nodes[activeItem].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
-        this.minItemHeaderIndex = activeItem;
-      }
-    });
-  }
-
-  // clean slate for next computation
-  private reset = () => {
-    this.itemCount = 0;
-    this.activeItems = new Set();
-    this.nodes = [];
-    this.currentSolution = [];
-    this.solutions = [];
-    this.spacerIndices = [];
-  }
-
-  // fill in required data for computation
-  private setup = (nodes: NodeTypes[]) => {
-    this.nodes = nodes;
-    this.itemCount = this.nodes[0].leftNode;
-    this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
-    this.lastSpacer = nodes.length - 1;
-    this.setOptionCount();
-    this.currentSolution = new Array(this.optionCount + 1);
-  }
-
-  private setOptionCount = () => {
-    this.optionCount = 1;
-    let i = this.itemCount + 1;
-    while (i < this.lastSpacer) {
-      i = this.nodes[i].downNode + 1;
-      this.optionCount++;
-    }
-  }
   // find all possible solutions to exact cover problem
   // translated algorithm x sudo code from knuths paper to working javascript
   find = (nodes: NodeTypes[], justOne: boolean = false) => {

@@ -1,3 +1,5 @@
+// simple minheap implementation, may or may not use
+
 class MinHeap {
   private heap: number[];
   constructor(nums: number[]) {
