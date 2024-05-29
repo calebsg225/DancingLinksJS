@@ -6,12 +6,13 @@ class DancingLinks {
   private nodes: NodeTypes[];
   private itemCount: number;
   private currentSolution: number[];
-  private solutions: number[][];
+  private solutions: Set<number>[];
   private lastSpacer: number;
   private optionCount: number;
   private minItemHeaderIndex: number;
-  private spacerIndices: number[];
+  private spacerIndices: Map<number, number>;
   constructor() {
+    this.reset();
   }
 
   // sets this.minItemHeaderIndex to the active item with the least amount of remaining options
@@ -26,12 +27,12 @@ class DancingLinks {
 
   // clean slate for next computation
   private reset = () => {
+    this.nodes = [];
     this.itemCount = 0;
     this.activeItems = new Set();
-    this.nodes = [];
-    this.currentSolution = [];
     this.solutions = [];
-    this.spacerIndices = [];
+    this.spacerIndices = new Map();
+    this.currentSolution = [];
   }
 
   // fill in required data for computation
@@ -45,11 +46,16 @@ class DancingLinks {
   }
 
   // set this.optionCount to the number of options available in the dataset
+  // also makes note of all the spacers with this.spacerIndices
   private setOptionCount = () => {
     this.optionCount = 1;
+    let j = 0;
     let i = this.itemCount + 1;
+    this.spacerIndices.set(i, j);
     while (i < this.lastSpacer) {
+      j++;
       i = this.nodes[i].downNode + 1;
+      this.spacerIndices.set(i, j);
       this.optionCount++;
     }
   }
@@ -143,7 +149,7 @@ class DancingLinks {
     while (true) {
       // X2
       if (!this.activeItems.size) {
-        this.solutions.push(this.currentSolution.slice(0,level));
+        this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.spacerIndices.get(v-1))));
         if (justOne) return this.solutions;
         // X8 START
         if (level === 0) {
