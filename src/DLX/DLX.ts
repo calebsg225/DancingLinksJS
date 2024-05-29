@@ -143,7 +143,11 @@ class DancingLinks {
       // X2
       if (!this.activeItems.size) {
         this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
-        if (justOne) return this.solutions;
+        if (justOne) {
+          const solutions = this.solutions;
+          this.reset();
+          return solutions;
+        };
         // X8 START
         if (level === 0) {
           const solutions = this.solutions;
