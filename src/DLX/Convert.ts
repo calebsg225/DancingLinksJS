@@ -47,7 +47,24 @@ class Convert {
     
     return nodes;
   }
+
+  // converts langford pair (n) to dlx data structure
+  fromLangfordPairs = (n: number) => {}
   
+  fromNQueens = (queenCount: number) => {}
+
+  // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
+  // string.length === n^4, 2 <= n <= 5
+  fromSudokuString = (sudokuBoard: string) => {}
+
+  // converts sudoku board in the form of a matrix of digits 0-9
+  // row.count === col.count, row.count === n^2, 2 <= n <= 5
+  fromSudokuMatrix = (sudokuBoard: number[][]) => {}
+
+  private verifySudokuString = (sudokuBoardString: string) => {}
+
+  private verifySudokuMatrix = (sudokuBoardMatrix: number[][]) => {}
+
   private verifyMatrix = (matrix: (0|1)[][]): boolean => {
     if (!matrix.length) return false;
     const control = matrix[0].length;
