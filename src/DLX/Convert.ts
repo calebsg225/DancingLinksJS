@@ -3,7 +3,7 @@ import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/
 class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
-  fromMatrix = (matrix: (0|1)[][]) => {
+  fromMatrix = (matrix: (0|1)[][]): NodeTypes[] => {
     if (!this.verifyMatrix(matrix)) return [];
     
     const colCount = matrix[0].length; // number of columns in the initial matrix
@@ -49,7 +49,22 @@ class Convert {
   }
 
   // converts langford pair (n) to dlx data structure
-  fromLangfordPairs = (n: number) => {}
+  fromLangfordPairs = (n: number): { matrix: (1|0)[][], converted: NodeTypes[] } => {
+    if (n <= 1) return { matrix: [], converted: [] };
+    const langfordMatrix: (0|1)[][] = [];
+
+    for (let i = 1; i <= n; i++) {
+      for (let j = 0; j < 2*n - i - 1; j++) {
+        const temp = new Array(3*n).fill(0);
+        temp[j] = 1;
+        temp[j + i + 1] = 1;
+        temp[2*n + i - 1] = 1;
+        langfordMatrix.push(temp);
+      }
+    }
+
+    return { matrix: langfordMatrix, converted: this.fromMatrix(langfordMatrix) };
+  }
   
   fromNQueens = (queenCount: number) => {}
 

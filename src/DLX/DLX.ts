@@ -134,7 +134,8 @@ class DancingLinks {
 
   // find all possible solutions to exact cover problem
   // translated algorithm x sudo code from knuths paper to working javascript
-  find = (nodes: NodeTypes[], justOne: boolean = false) => {
+  find = (nodes: NodeTypes[], justOne: boolean = false): Set<number>[] => {
+    if (!nodes.length) return [];
     // X1
     this.setup(nodes);
     let level = 0;
