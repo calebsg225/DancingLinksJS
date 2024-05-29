@@ -1,5 +1,5 @@
 import MinHeap from "../utils/MinHeap";
-import { HeaderNode, NodeTypes } from "../type/NodeTypes";
+import { NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
   private activeItems: Set<number>;
@@ -10,6 +10,7 @@ class DancingLinks {
   private lastSpacer: number;
   private optionCount: number;
   private minItemHeaderIndex: number;
+  private spacerIndices: number[];
   constructor() {
   }
 
@@ -95,8 +96,9 @@ class DancingLinks {
     }
   }
 
+  // sets this.minItemHeaderIndex to the active item with the least amount of remaining options
   private setMinItemHeader = () => {
-    this.minItemHeaderIndex = 1;
+    this.minItemHeaderIndex = this.nodes[0].rightNode;
     this.activeItems.forEach((activeItem) => {
       if (this.nodes[activeItem].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
         this.minItemHeaderIndex = activeItem;
@@ -104,22 +106,24 @@ class DancingLinks {
     });
   }
 
+  // clean slate for next computation
   private reset = () => {
     this.itemCount = 0;
     this.activeItems = new Set();
     this.nodes = [];
     this.currentSolution = [];
     this.solutions = [];
+    this.spacerIndices = [];
   }
 
+  // fill in required data for computation
   private setup = (nodes: NodeTypes[]) => {
     this.nodes = nodes;
     this.itemCount = this.nodes[0].leftNode;
     this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
     this.lastSpacer = nodes.length - 1;
-    this.currentSolution = [];
-    this.solutions = [];
     this.setOptionCount();
+    this.currentSolution = new Array(this.optionCount + 1);
   }
 
   private setOptionCount = () => {
@@ -130,63 +134,51 @@ class DancingLinks {
       this.optionCount++;
     }
   }
-
-  /*
-        SIMPLIFIED ALGORITHM X SUDO CODE FROM SUDO CODE IN KNUTHS PAPER
-  X1: initialize
-    n = num items
-    z = last spacer address
-
-  X2: level l
-    if no more active items, ( add to the solution, if l=0 return solutions, else lower l, goto X6 )
-
-    select an uncovered item (possibly one with the lowest number of available options)
-
-    cover(i)
-    xl = downlink of node i;
-
-  X5: try xl
-    if xl = i (meaning no other options), uncover(i), if l=0 return solutions, else lower l, goto X6
-    cover items other than i in option containing xl then increase a level and go to X2
-
-  X6: try again
-    uncover items other than i in option containing xl, goto X5;
-  */
-
-
   // find all possible solutions to exact cover problem
-  // translated algorithm x sudo code to working javascript
-  findAll = (nodes: NodeTypes[]) => {
+  // translated algorithm x sudo code from knuths paper to working javascript
+  find = (nodes: NodeTypes[], justOne: boolean = false) => {
+
+    // X1
     this.setup(nodes);
     let level = 0;
 
     while (true) {
-      // X2 in sudo code
+      // X2
       if (!this.activeItems.size) {
-        this.solutions.push(this.currentSolution);
+        this.solutions.push(this.currentSolution.slice(0,level));
+        if (justOne) return this.solutions;
+        // X8 START
         if (level === 0) {
-          return this.solutions;
+          const solutions = this.solutions;
+          this.reset();
+          return solutions;
         } else {
           level--;
           this.currentSolution.pop();
           this.uncoverItemsInOption(level);
         }
+        // X8 END
       } else {
+        // X3
         this.setMinItemHeader();
+        // X4
         this.coverItem(this.minItemHeaderIndex);
-        this.currentSolution.push(this.nodes[this.minItemHeaderIndex].downNode);
+        this.currentSolution[level] = this.nodes[this.minItemHeaderIndex].downNode;
       }
 
-      // X5 in sudo code
+      // X5
       while (this.currentSolution[level] === this.minItemHeaderIndex) {
         this.uncoverItem(this.minItemHeaderIndex);
+        // X8 START
         if (level === 0) {
-          return this.solutions;
+          const solutions = this.solutions;
+          this.reset();
+          return solutions;
         } else {
           level--;
-          this.currentSolution.pop();
           this.uncoverItemsInOption(level);
         }
+        // X8 END
       }
 
       // cover items other than i in option containing xl
@@ -204,8 +196,8 @@ class DancingLinks {
     }
   }
 
-  // X6 in sudo code
   private uncoverItemsInOption = (level: number) => {
+    // X6
     const xl = this.currentSolution[level];
     let p = xl - 1;
     while (p != xl) {
@@ -215,7 +207,6 @@ class DancingLinks {
         p--;
       }
     }
-
     this.minItemHeaderIndex = this.nodes[xl].headerNode;
     this.currentSolution[level] = this.nodes[xl].downNode;
   }
