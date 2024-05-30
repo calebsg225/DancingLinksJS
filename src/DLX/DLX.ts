@@ -134,8 +134,8 @@ class DancingLinks {
 
   // find all possible solutions to exact cover problem
   // translated algorithm x sudo code from knuths paper to working javascript
-  find = (nodes: NodeTypes[], justOne: boolean = false): Set<number>[] => {
-    if (!nodes.length) return [];
+  find = (nodes: NodeTypes[], solutionLimit: number = Infinity): Set<number>[] => {
+    if (!nodes.length || solutionLimit <= 0) return [];
     // X1
     this.setup(nodes);
     let level = 0;
@@ -144,7 +144,7 @@ class DancingLinks {
       // X2
       if (!this.activeItems.size) {
         this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
-        if (justOne) {
+        if (this.solutions.length >= solutionLimit) {
           const solutions = this.solutions;
           this.reset();
           return solutions;
