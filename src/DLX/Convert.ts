@@ -139,6 +139,24 @@ class Convert {
 
   }
 
+  toNQueens = (solutions: Set<number>[]) => {
+    const nQueensSolutions = [];
+
+    const queenCount = solutions[0].size;
+
+    for (const solution of solutions) {
+      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill(0));
+      solution.forEach(v => {
+        const col = v%queenCount;
+        const row = (v-col)/queenCount;
+        temp[row][col] = 1;
+      });
+      nQueensSolutions.push(temp);
+    }
+
+    return nQueensSolutions;
+  }
+
   // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
   // string.length === n^4, 2 <= n <= 5
   fromSudokuString = (sudokuBoard: string) => {}
