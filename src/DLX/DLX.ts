@@ -7,7 +7,6 @@ class DancingLinks {
   private itemCount: number;
   private currentSolution: number[];
   private solutions: Set<number>[];
-  private lastSpacer: number;
   private optionCount: number;
   private minItemHeaderIndex: number;
   constructor() {
@@ -38,19 +37,17 @@ class DancingLinks {
     this.nodes = nodes;
     this.itemCount = this.nodes[0].leftNode;
     this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
-    this.lastSpacer = nodes.length - 1;
     this.setOptionCount();
     this.currentSolution = new Array(this.optionCount + 1);
   }
 
   // set this.optionCount to the number of options available in the dataset
-  // also makes note of all the spacers with this.spacerIndices
   private setOptionCount = () => {
-    this.optionCount = 1;
-    let i = this.itemCount + 1;
-    while (i < this.lastSpacer) {
-      i = this.nodes[i].downNode + 1;
+    this.optionCount = 0;
+    let i = this.nodes.length - 1;
+    while(i != this.nodes[i].upNode) {
       this.optionCount++;
+      i = this.nodes[i].upNode - 1;
     }
   }
 

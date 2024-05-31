@@ -11,7 +11,7 @@ class Convert {
     
     const nodes: NodeTypes[] = [];
     
-    // create [first] node
+    // create [first] [spacer] node
     nodes.push(new FirstNode(1, colCount));
     
     // create [header] nodes, each pointing to themselves in the up and down direction
@@ -102,6 +102,31 @@ class Convert {
   fromNQueens = (queenCount: number): { matrix: (1|0)[][], converted: NodeTypes[] } => {
     if (queenCount < 1) return { matrix: [], converted: [] }
     const nQueenMatrix: (0|1)[][] = [];
+
+    const diagCount = 2*queenCount - 3;
+
+    for (let row = 0; row < queenCount; row++) {
+      for (let col = 0; col < queenCount; col++) {
+        const temp = new Array(2*queenCount + 2*diagCount).fill(0);
+        const lDiag = col - row + queenCount - 2; // \
+        const rDiag = col + row - 1; // /
+        temp[col] = 1;
+        temp[queenCount + row] = 1;
+        if (lDiag >= 0 && lDiag < diagCount) temp[2*queenCount + lDiag] = 1;
+        if (rDiag >= 0 && rDiag < diagCount) temp[2* queenCount + diagCount + rDiag] = 1;
+
+        nQueenMatrix.push(temp);
+      }
+    }
+
+    const converted = this.fromMatrix(nQueenMatrix);
+
+    // remove diagonals from active nodes since they are covered AT MOST once instead of EXACTLY once
+    converted[0].leftNode = 2*queenCount;
+    converted[2*queenCount].rightNode = 0;
+
+    return { matrix: nQueenMatrix, converted: converted };
+
   }
 
   // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
