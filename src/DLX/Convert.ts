@@ -3,7 +3,8 @@ import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/
 class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
-  fromMatrix = (matrix: (0|1)[][]): NodeTypes[] => {
+  // primary items MUST be put to the far left
+  fromMatrix = (matrix: (0|1)[][], secondaryItems: number[] = []): NodeTypes[] => {
     if (!this.verifyMatrix(matrix)) return [];
     
     const colCount = matrix[0].length; // number of columns in the initial matrix
@@ -14,9 +15,19 @@ class Convert {
     // create [first] [spacer] node
     nodes.push(new FirstNode(1, colCount));
     
+    // create set of all secondary items
+    const secItSet = new Set(secondaryItems);
+    
     // create [header] nodes, each pointing to themselves in the up and down direction
     for (let i = 1; i <= colCount; i++) {
-      nodes.push(new HeaderNode(i-1, i === colCount ? 0 : i+1, i, i));
+      const leftNode = secItSet.has(i) ? i : i-1;
+      const rightNode = secItSet.has(i) ? i : (i === colCount ? 0 : i+1);
+      nodes.push(new HeaderNode(leftNode, rightNode, i, i));
+    }
+
+    if (secondaryItems.length) {
+      nodes[secondaryItems[0] - 1].rightNode = 0;
+      nodes[0].leftNode = secondaryItems[0] - 1;
     }
     
     let prevSpacer = 0; // keep track of the index of the previous spacer, 0 if previous doesn't exist
@@ -119,11 +130,10 @@ class Convert {
       }
     }
 
-    const converted = this.fromMatrix(nQueenMatrix);
+    const secondaryItems = [];
+    for (let i = 2*queenCount + 1; i <= nQueenMatrix[0].length; i++) secondaryItems.push(i);
 
-    // remove diagonals from active nodes since they are covered AT MOST once instead of EXACTLY once
-    converted[0].leftNode = 2*queenCount;
-    converted[2*queenCount].rightNode = 0;
+    const converted = this.fromMatrix(nQueenMatrix, secondaryItems);
 
     return { matrix: nQueenMatrix, converted: converted };
 

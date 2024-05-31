@@ -2,7 +2,6 @@ import MinHeap from "../utils/MinHeap";
 import { NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
-  private activeItems: Set<number>;
   private nodes: NodeTypes[];
   private itemCount: number;
   private currentSolution: number[];
@@ -15,19 +14,20 @@ class DancingLinks {
 
   // sets this.minItemHeaderIndex to the active item with the least amount of remaining options
   private setMinItemHeader = () => {
+    let curNode = this.nodes[0].rightNode;
     this.minItemHeaderIndex = this.nodes[0].rightNode;
-    this.activeItems.forEach((activeItem) => {
-      if (this.nodes[activeItem].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
-        this.minItemHeaderIndex = activeItem;
+    while (curNode != 0) {
+      if (this.nodes[curNode].columnCount < this.nodes[this.minItemHeaderIndex].columnCount) {
+        this.minItemHeaderIndex = curNode;
       }
-    });
+      curNode = this.nodes[curNode].rightNode;
+    }
   }
 
   // clean slate for next computation
   private reset = () => {
     this.nodes = [];
     this.itemCount = 0;
-    this.activeItems = new Set();
     this.solutions = [];
     this.currentSolution = [];
   }
@@ -36,7 +36,6 @@ class DancingLinks {
   private setup = (nodes: NodeTypes[]) => {
     this.nodes = nodes;
     this.itemCount = this.nodes[0].leftNode;
-    this.activeItems = new Set(Array.from(Array(this.itemCount), (_, i) => i + 1));
     this.setOptionCount();
     this.currentSolution = new Array(this.optionCount + 1);
   }
@@ -67,7 +66,6 @@ class DancingLinks {
     const r = header.rightNode;
     this.nodes[l].rightNode = r;
     this.nodes[r].leftNode = l;
-    this.activeItems.delete(headerItemToCover);
   }
 
   // uncovers an inputed item
@@ -79,7 +77,6 @@ class DancingLinks {
     const r = header.rightNode;
     this.nodes[l].rightNode = headerItemToUncover;
     this.nodes[r].leftNode = headerItemToUncover;
-    this.activeItems.add(headerItemToUncover);
 
     // unhide all options connected to header
     let p = header.upNode;
@@ -139,7 +136,7 @@ class DancingLinks {
 
     while (true) {
       // X2
-      if (!this.activeItems.size) {
+      if (this.nodes[0].rightNode === 0) {
         this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
         if (this.solutions.length >= solutionLimit) {
           const solutions = this.solutions;
