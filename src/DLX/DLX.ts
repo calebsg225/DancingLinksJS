@@ -133,11 +133,14 @@ class DancingLinks {
     // X1
     this.setup(nodes);
     let level = 0;
+    //let solutionCount = 0;
 
     while (true) {
       // X2
       if (this.nodes[0].rightNode === 0) {
         this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
+        /* if (!(solutionCount%10_000) || !(solutionCount%2_279_183)) console.log(`${solutionCount}: [${this.currentSolution.slice(0,level).map(v => this.nodes[v].option)}]`);
+        solutionCount++; */
         if (this.solutions.length >= solutionLimit) {
           const solutions = this.solutions;
           this.reset();
