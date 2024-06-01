@@ -142,6 +142,8 @@ class Convert {
   toNQueens = (solutions: Set<number>[]) => {
     const nQueensSolutions = [];
 
+    if (!solutions.length) return [];
+
     const queenCount = solutions[0].size;
 
     for (const solution of solutions) {
