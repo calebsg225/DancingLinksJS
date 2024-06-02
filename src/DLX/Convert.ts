@@ -161,7 +161,38 @@ class Convert {
 
   // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
   // string.length === n^4, 2 <= n <= 5
-  fromSudokuString = (sudokuBoard: string) => {}
+  fromSudokuString = (sudokuBoard: string): { matrix: (0|1)[][], converted: NodeTypes[] } => {
+    const sudokuMatrix: (0|1)[][] = [];
+
+    const n = Math.sqrt(sudokuBoard.length);
+    const t = Math.sqrt(n);
+
+    const digits = new Set();
+    for (let i = 1; i <= n; i++) digits.add(i);
+
+    for (let i = 0; i < sudokuBoard.length; i++) {
+      const char = sudokuBoard[i];
+      if (digits.has(char)) {
+        sudokuMatrix.push(this.sudokuCreateRow(n, t, +char, i));
+      } else {
+        for (let j = 1; j <= n; j++) {
+          sudokuMatrix.push(this.sudokuCreateRow(n, t, j, i));
+        }
+      }
+    }
+    return { matrix: sudokuMatrix, converted: this.fromMatrix(sudokuMatrix)};
+  }
+
+  private sudokuCreateRow = (n: number, t: number, digit: number, i: number): (0|1)[] => {
+    const res = new Array(n**2 * 4).fill('_');
+    const col = i%n;
+    const row = (i - col) / n;
+    res[i] = 1;
+    res[n**2 + row*n + digit - 1] = 1;
+    res[2 * n**2 + col*n + digit - 1] = 1;
+    res[3 * n**2 + Math.floor(col/t) * n + Math.floor(row/t) * n*t + digit - 1] = 1;
+    return res;
+  }
 
   // converts sudoku board in the form of a matrix of digits 0-9
   // row.count === col.count, row.count === n^2, 2 <= n <= 5
