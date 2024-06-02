@@ -172,7 +172,7 @@ class Convert {
 
     for (let i = 0; i < sudokuBoard.length; i++) {
       const char = sudokuBoard[i];
-      if (digits.has(char)) {
+      if (digits.has(+char)) {
         sudokuMatrix.push(this.sudokuCreateRow(n, t, +char, i));
       } else {
         for (let j = 1; j <= n; j++) {
@@ -197,6 +197,23 @@ class Convert {
   // converts sudoku board in the form of a matrix of digits 0-9
   // row.count === col.count, row.count === n^2, 2 <= n <= 5
   fromSudokuMatrix = (sudokuBoard: number[][]) => {}
+
+  toSudoku = (solutions: Set<number>[]) => {
+    if (!solutions.length) return [];
+    const sudokuSolutions: string[] = [];
+    const n = Math.sqrt(solutions[0].size);
+
+    for (const solution of solutions) {
+      const sudokuSolution = new Array(n**2);
+      for (const option of solution) {
+        const i = Math.floor(option/n);
+        sudokuSolution[i] = option%9 + 1;
+      }
+      sudokuSolutions.push(sudokuSolution.join(''));
+    }
+
+    return sudokuSolutions;
+  }
 
   private verifySudokuString = (sudokuBoardString: string) => {}
 
