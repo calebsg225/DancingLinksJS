@@ -173,7 +173,10 @@ class Convert {
     for (let i = 0; i < sudokuBoard.length; i++) {
       const char = sudokuBoard[i];
       if (digits.has(+char)) {
-        sudokuMatrix.push(this.sudokuCreateRow(n, t, +char, i));
+        for  (let j = 1; j <= n; j++) {
+          if (+char === j) sudokuMatrix.push(this.sudokuCreateRow(n, t, +char, i));
+          else sudokuMatrix.push(new Array(n**2 * 4).fill(0));
+        }
       } else {
         for (let j = 1; j <= n; j++) {
           sudokuMatrix.push(this.sudokuCreateRow(n, t, j, i));
@@ -207,7 +210,7 @@ class Convert {
       const sudokuSolution = new Array(n**2);
       for (const option of solution) {
         const i = Math.floor(option/n);
-        sudokuSolution[i] = option%9 + 1;
+        sudokuSolution[i] = option%n + 1;
       }
       sudokuSolutions.push(sudokuSolution.join(''));
     }
