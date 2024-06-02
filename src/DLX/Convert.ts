@@ -184,7 +184,7 @@ class Convert {
   }
 
   private sudokuCreateRow = (n: number, t: number, digit: number, i: number): (0|1)[] => {
-    const res = new Array(n**2 * 4).fill('_');
+    const res = new Array(n**2 * 4).fill(0);
     const col = i%n;
     const row = (i - col) / n;
     res[i] = 1;
