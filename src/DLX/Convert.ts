@@ -141,12 +141,13 @@ class Convert {
 
     for (let row = 0; row < queenCount; row++) {
       for (let col = 0; col < queenCount; col++) {
+        const row2 = half + (row%2 ? -Math.floor((row+1)/2) : Math.floor((row+1)/2));
         const col2 = half + (col%2 ? -Math.floor((col+1)/2) : Math.floor((col+1)/2));
         const temp = new Array(2*queenCount + 2*diagCount).fill(0);
         const lDiag = col - row + queenCount - 2; // \
         const rDiag = col + row - 1; // /
         temp[col2] = 1;
-        temp[queenCount + row] = 1;
+        temp[queenCount + row2] = 1;
         if (lDiag >= 0 && lDiag < diagCount) temp[2*queenCount + lDiag] = 1;
         if (rDiag >= 0 && rDiag < diagCount) temp[2* queenCount + diagCount + rDiag] = 1;
 
@@ -170,7 +171,7 @@ class Convert {
     const queenCount = solutions[0].size;
 
     for (const solution of solutions) {
-      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill(0));
+      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill('.'));
       solution.forEach(v => {
         const col = v%queenCount;
         const row = (v-col)/queenCount;
