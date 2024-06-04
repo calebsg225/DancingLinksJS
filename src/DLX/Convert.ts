@@ -168,7 +168,7 @@ class Convert {
   // converts directly to NodeTypes[]
   fromNQueens3 = (queenCount: number) => {
     if (queenCount < 1) return { matrix: [], converted: [] }
-    const itemCount = queenCount*6 - 6; // number of items in the initial matrix
+    const itemCount = (queenCount === 1 ? 2 : queenCount*6 - 6); // number of items in the initial matrix
     const nQueenMatrix: (0|1)[][] = [];
     const nodes: NodeTypes[] = [];
     
