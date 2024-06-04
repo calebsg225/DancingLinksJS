@@ -9,8 +9,8 @@ class Convert {
     const itemCount = matrix[0].length; // number of columns in the initial matrix
     const optionCount = matrix.length; // number of rows in the initial matrix
     const nodes: NodeTypes[] = [];
-    // create [first] [spacer] node
-    nodes.push(new FirstNode(1, itemCount));
+    // create [first] [spacer] node pointing to itself
+    nodes.push(new FirstNode(0, 0));
     // create set of all secondary items
 
     let prevHeader = 0;
@@ -27,6 +27,8 @@ class Convert {
       nodes.push(new  HeaderNode(prevHeader, 0, i, i));
       prevHeader = i;
     }
+    // make sure the [first] node points to the last primary [header] node
+    nodes[0].leftNode = prevHeader;
     
     let prevSpacer = 0;
     
@@ -130,8 +132,8 @@ class Convert {
 
   }
 
-  // generate list using 'organ-pipe' order for columns
-  // results a noticable speed increase for larger queen count values
+  // generate rows and columns using 'organ-pipe' order for primary items
+  // results a noticeable speed increase for larger queen count values
   fromNQueens2 = (queenCount: number) => {
     if (queenCount < 1) return { matrix: [], converted: [] }
     const nQueenMatrix: (0|1)[][] = [];
@@ -161,6 +163,79 @@ class Convert {
     const converted = this.fromMatrix(nQueenMatrix, secondaryItems);
 
     return { matrix: nQueenMatrix, converted: converted };
+  }
+
+  // converts directly to NodeTypes[]
+  fromNQueens3 = (queenCount: number) => {
+    if (queenCount < 1) return { matrix: [], converted: [] }
+    const itemCount = queenCount*6 - 6; // number of items in the initial matrix
+    const nQueenMatrix: (0|1)[][] = [];
+    const nodes: NodeTypes[] = [];
+    
+    // create [first] [spacer] node pointing to itself
+    nodes.push(new FirstNode(0, 0));
+
+    // create all [header] nodes
+    // primary nodes point to the previous node on the left, 0 on the right until changed
+    // secondary nodes point to themselves
+    let prevHeader = 0;
+    for (let i = 1; i <= itemCount; i++) {
+      if (i > queenCount*2) {
+        nodes.push(new HeaderNode(i, i, i, i));
+        continue;
+      }
+      nodes[prevHeader].rightNode = i;
+      nodes.push(new  HeaderNode(prevHeader, 0, i, i));
+      prevHeader = i;
+    }
+    // make the [first] node points to the last primary [header] node
+    nodes[0].leftNode = prevHeader;
+
+    let prevSpacer = 0;
+
+    // creating variables for convenience
+    const half = Math.floor(queenCount/2);
+    const diagCount = 2*queenCount - 3;
+
+    for (let row = 0; row < queenCount; row++) {
+      for (let col = 0; col < queenCount; col++) {
+        const temp = new Array(2*queenCount + 2*diagCount).fill(0);
+        // create new [spacer] node, up pointer pointing to first [item] in the previous row, if it exists
+        nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
+        prevSpacer = nodes.length - 1;
+
+        const index = row*queenCount + col;
+        
+        const row2 = half + Math.floor((row+1)/2) * (row%2 ? -1 : 1);
+        const col2 = half + Math.floor((col+1)/2) * (col%2 ? -1 : 1);
+        const lDiag = col - row + queenCount - 2; // \
+        const rDiag = col + row - 1; // /
+        
+        // add primary [item] nodes
+        for (const j of [col2+1, queenCount + row2+1]) {
+          temp[j-1] = 1;
+          nodes[nodes[j].upNode].downNode = nodes.length;
+          nodes.push(new ItemNode(j, index, nodes[j].upNode, j));
+          nodes[j].columnCount++;
+          nodes[j].upNode = nodes.length - 1;
+        }
+        // add secondary [item] nodes
+        for (const j of [{diag: lDiag, ind: 2*queenCount + lDiag + 1}, {diag: rDiag, ind: 2*queenCount + diagCount + rDiag + 1}]) {
+          if (j.diag >= 0 && j.diag < diagCount) {
+            temp[j.ind - 1] = 1;
+            nodes[nodes[j.ind].upNode].downNode = nodes.length;         
+            nodes.push(new ItemNode(j.ind, index, nodes[j.ind].upNode, j.ind))
+            nodes[j.ind].columnCount++;
+            nodes[j.ind].upNode = nodes.length - 1;
+          };
+        }
+        nodes[prevSpacer].downNode = nodes.length - 1; // update [spacer] down pointer to last [item] node in previous option
+        nQueenMatrix.push(temp);
+      }
+    }
+    nodes.push(new SpacerNode(prevSpacer+1, nodes.length)); // create final [spacer] node to complete final loop of the last row
+
+    return { matrix: nQueenMatrix, converted: nodes };
   }
 
   toNQueens = (solutions: Set<number>[]) => {

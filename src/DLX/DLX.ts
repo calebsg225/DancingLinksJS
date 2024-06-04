@@ -3,7 +3,6 @@ import { NodeTypes } from "../type/NodeTypes";
 
 class DancingLinks {
   private nodes: NodeTypes[];
-  private itemCount: number;
   private currentSolution: number[];
   private solutions: Set<number>[];
   private optionCount: number;
@@ -27,7 +26,6 @@ class DancingLinks {
   // clean slate for next computation
   private reset = () => {
     this.nodes = [];
-    this.itemCount = 0;
     this.solutions = [];
     this.currentSolution = [];
   }
@@ -35,19 +33,16 @@ class DancingLinks {
   // fill in required data for computation
   private setup = (nodes: NodeTypes[]) => {
     this.nodes = nodes;
-    this.itemCount = this.nodes[0].leftNode;
-    this.setOptionCount();
-    this.currentSolution = new Array(this.optionCount + 1);
-  }
 
-  // set this.optionCount to the number of options available in the dataset
-  private setOptionCount = () => {
+    // count how many options there are
     this.optionCount = 0;
     let i = this.nodes.length - 1;
     while(i != this.nodes[i].upNode) {
       this.optionCount++;
       i = this.nodes[i].upNode - 1;
     }
+
+    this.currentSolution = new Array(this.optionCount + 1);
   }
 
   // covers an inputed item
