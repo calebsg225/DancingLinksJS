@@ -4,42 +4,40 @@ class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
   // primary items MUST be put to the far left
-  fromMatrix = (matrix: (0|1)[][], secondaryItems: number[] = []): NodeTypes[] => {
+  fromMatrix = (matrix: (0|1)[][], secondaryItems: Set<number> = new Set()): NodeTypes[] => {
     if (!this.verifyMatrix(matrix)) return [];
-    
-    const colCount = matrix[0].length; // number of columns in the initial matrix
-    const rowCount = matrix.length; // number of rows in the initial matrix
-    
+    const itemCount = matrix[0].length; // number of columns in the initial matrix
+    const optionCount = matrix.length; // number of rows in the initial matrix
     const nodes: NodeTypes[] = [];
-    
     // create [first] [spacer] node
-    nodes.push(new FirstNode(1, colCount));
-    
+    nodes.push(new FirstNode(1, itemCount));
     // create set of all secondary items
-    const secItSet = new Set(secondaryItems);
-    
-    // create [header] nodes, each pointing to themselves in the up and down direction
-    for (let i = 1; i <= colCount; i++) {
-      const leftNode = secItSet.has(i) ? i : i-1;
-      const rightNode = secItSet.has(i) ? i : (i === colCount ? 0 : i+1);
-      nodes.push(new HeaderNode(leftNode, rightNode, i, i));
-    }
 
-    if (secondaryItems.length) {
-      nodes[secondaryItems[0] - 1].rightNode = 0;
-      nodes[0].leftNode = secondaryItems[0] - 1;
+    let prevHeader = 0;
+
+    // create all [header] nodes
+    // primary nodes are connected to the initial node
+    // secondary nodes point to themselves
+    for (let i = 1; i <= itemCount; i++) {
+      if (secondaryItems.has(i)) {
+        nodes.push(new HeaderNode(i, 0, i, i));
+        continue;
+      }
+      nodes[prevHeader].rightNode = i;
+      nodes.push(new  HeaderNode(prevHeader, 0, i, i));
+      prevHeader = i;
     }
     
     let prevSpacer = 0; // keep track of the index of the previous spacer, 0 if previous doesn't exist
     
     // create the rest of the relevant nodes, i.e. [spacer] and [item] nodes
-    for (let i = 0; i < rowCount; i++) {
+    for (let i = 0; i < optionCount; i++) {
       // create new [spacer] node, up pointer pointing to first [item] in the previous row, if it exists
       nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
       const spacerIndex = nodes.length - 1;
       
       // create ItemNodes belonging to option row
-      for (let j = 0; j < colCount; j++) {
+      for (let j = 0; j < itemCount; j++) {
         if (!matrix[i][j]) continue; // skip if value is 0
         nodes[spacerIndex].downNode = nodes.length; // update [spacer] down pointer
         
@@ -130,8 +128,8 @@ class Convert {
       }
     }
 
-    const secondaryItems = [];
-    for (let i = 2*queenCount + 1; i <= nQueenMatrix[0].length; i++) secondaryItems.push(i);
+    const secondaryItems: Set<number> = new Set();
+    for (let i = 2*queenCount + 1; i <= nQueenMatrix[0].length; i++) secondaryItems.add(i);
 
     const converted = this.fromMatrix(nQueenMatrix, secondaryItems);
 

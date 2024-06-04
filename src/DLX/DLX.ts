@@ -130,52 +130,54 @@ class DancingLinks {
   // translated algorithm x sudo code from knuths paper to working javascript
   find = (nodes: NodeTypes[], solutionLimit: number = Infinity): Set<number>[] => {
     if (!nodes.length || solutionLimit <= 0) return [];
-    // X1
+    // X1 START
     this.setup(nodes);
     let level = 0;
     //let solutionCount = 0;
+    // X1 END
 
     while (true) {
       // X2
       if (this.nodes[0].rightNode === 0) {
         this.solutions.push(new Set(this.currentSolution.slice(0,level).map(v => this.nodes[v].option)));
-        /* if (!(solutionCount%10_000) || !(solutionCount%2_279_183)) console.log(`${solutionCount}: [${this.currentSolution.slice(0,level).map(v => this.nodes[v].option)}]`);
-        solutionCount++; */
+        //solutionCount++;
+        //if (!(solutionCount%100_000)) console.log(`${solutionCount}: [${this.currentSolution.slice(0,level).map(v => this.nodes[v].option)}]`);
         if (this.solutions.length >= solutionLimit) {
           const solutions = this.solutions;
           this.reset();
+          //console.log(solutionCount);
           return solutions;
         };
         // X8 START
         if (level === 0) {
           const solutions = this.solutions;
           this.reset();
+          //console.log(solutionCount);
           return solutions;
-        } else {
-          level--;
-          this.uncoverItemsInOption(level);
         }
+        level--;
+        this.uncoverItemsInOption(level);
         // X8 END
       } else {
-        // X3
-        this.setMinItemHeader();
-        // X4
+        this.setMinItemHeader(); // X3
+        // X4 START
         this.coverItem(this.minItemHeaderIndex);
         this.currentSolution[level] = this.nodes[this.minItemHeaderIndex].downNode;
+        // X4 END
       }
 
       // X5
       while (this.currentSolution[level] === this.minItemHeaderIndex) {
-        this.uncoverItem(this.minItemHeaderIndex);
+        this.uncoverItem(this.minItemHeaderIndex); // X7
         // X8 START
         if (level === 0) {
           const solutions = this.solutions;
           this.reset();
+          //console.log(solutionCount);
           return solutions;
-        } else {
-          level--;
-          this.uncoverItemsInOption(level);
         }
+        level--;
+        this.uncoverItemsInOption(level);
         // X8 END
       }
 
@@ -193,6 +195,8 @@ class DancingLinks {
     }
   }
 
+  // step in this.find
+  // uncovers previously covered items of the current option, excluding the initial item
   private uncoverItemsInOption = (level: number) => {
     // X6
     const xl = this.currentSolution[level];
