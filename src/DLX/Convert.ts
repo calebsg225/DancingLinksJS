@@ -16,11 +16,11 @@ class Convert {
     let prevHeader = 0;
 
     // create all [header] nodes
-    // primary nodes are connected to the initial node
+    // primary nodes point to the previous node on the left, 0 on the right until changed
     // secondary nodes point to themselves
     for (let i = 1; i <= itemCount; i++) {
       if (secondaryItems.has(i)) {
-        nodes.push(new HeaderNode(i, 0, i, i));
+        nodes.push(new HeaderNode(i, i, i, i));
         continue;
       }
       nodes[prevHeader].rightNode = i;
@@ -28,30 +28,23 @@ class Convert {
       prevHeader = i;
     }
     
-    let prevSpacer = 0; // keep track of the index of the previous spacer, 0 if previous doesn't exist
+    let prevSpacer = 0;
     
-    // create the rest of the relevant nodes, i.e. [spacer] and [item] nodes
+    // create the rest of the relevant nodes, ([spacer] and [item] nodes)
     for (let i = 0; i < optionCount; i++) {
       // create new [spacer] node, up pointer pointing to first [item] in the previous row, if it exists
       nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
-      const spacerIndex = nodes.length - 1;
-      
+      prevSpacer = nodes.length - 1;
       // create ItemNodes belonging to option row
       for (let j = 0; j < itemCount; j++) {
-        if (!matrix[i][j]) continue; // skip if value is 0
-        nodes[spacerIndex].downNode = nodes.length; // update [spacer] down pointer
-        
+        if (matrix[i][j] !== 1) continue; // skip if value is not a 1
         nodes[nodes[j+1].upNode].downNode = nodes.length; // update [header] down pointer
-        
         nodes.push(new ItemNode(j+1, i, nodes[j+1].upNode, j+1)); // add new [item] node to nodes array
-        
         nodes[j+1].columnCount++; // increase [header] column count
         nodes[j+1].upNode = nodes.length - 1; // update [header] up pointer
       }
-      
-      prevSpacer = spacerIndex;
+      nodes[prevSpacer].downNode = nodes.length - 1; // update [spacer] down pointer to last [item] node in previous option
     }
-    
     nodes.push(new SpacerNode(prevSpacer+1, nodes.length)); // create final [spacer] node to complete final loop of the last row
     
     return nodes;
@@ -231,4 +224,4 @@ class Convert {
 
 }
 
-export default new Convert;
+export default Convert;

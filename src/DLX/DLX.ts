@@ -214,4 +214,4 @@ class DancingLinks {
 
 }
 
-export default new DancingLinks;
+export default DancingLinks;

@@ -1,4 +1,6 @@
 import Convert from "./DLX/Convert";
 import DancingLinks from "./DLX/DLX";
 
-export { Convert, DancingLinks }
+class DLXSolver {
+  constructor() {}
+}
