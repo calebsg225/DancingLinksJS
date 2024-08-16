@@ -1,23 +1,37 @@
 # JavaScript Implementation of Knuth's Algorithm X
 
-## Usage
+## Matrix Usage
 ``` js
-const testMatrix = [
-  [0, 0, 1, 0, 1, 0 ,0],
-  [1, 0, 0, 1, 0, 0, 1], 
-  [0, 1, 1, 0, 0, 1, 0], 
-  [1, 0, 0, 1, 0, 1, 0],
-  [0, 1, 0, 0, 0, 0, 1],
-  [0, 0, 0, 1, 1, 0, 1]
+const matrix: (0 | 1)[][] = [
+  [0, 0, 1, 0, 1, 0 ,0],  // 0
+  [1, 0, 0, 1, 0, 0, 1],  // 1
+  [0, 1, 1, 0, 0, 1, 0],  // 2
+  [1, 0, 0, 1, 0, 1, 0],  // 3 commented row indices
+  [0, 1, 0, 0, 0, 0, 1],  // 4
+  [1, 1, 0, 1, 0, 1, 1],  // 5
+  [0, 0, 0, 0, 1, 0, 0]   // 6
 ];
 
-// convert matrix into a datastructure useable by the DLX program
-const convertedMatrix = Convert.fromMatrix(testMatrix);
+/* 
+DLXSolver.solveMatrix(
+  matrix: matrix of 1's and 0's,
+  solutionCount: limit the number of solutions to find. Default: */ Infinity /*,
+  secondaryItems: a Set containing column indices to exclude as primary items when running DLX. Default: */ new Set() /*
+)
+*/
 
-// get all valid solutions 
-const solutions = DLX.find(convertedMatrix);
-// outputs an array of sets, each set being a valid solution.
-// Array is empty if there are no valid solutions.
+const solutions = DLXSolver.solveMatrix(matrix, 2);
 
-console.log(solutions); // [{0, 3, 4}]
+/* 
+DLXSolver.solveMatrix() outputs an array of Sets.
+Each Set is a solution, where each digit in the Set is a row index making up that solution.
+The array returns empty if there are no valid solutions.
+*/
+
+console.log(solutions); // [ {0, 4, 3}, {0, 5} ]
+// The solution {2, 1, 6} is not found because we set solutionCount to 2.
+```
+
+## NQueens Usage
+``` js
 ```

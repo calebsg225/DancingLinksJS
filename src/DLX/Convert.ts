@@ -165,6 +165,7 @@ class Convert {
     return { matrix: nQueenMatrix, converted: converted };
   }
 
+  // 'organ-pipe' order
   // converts directly to NodeTypes[]
   fromNQueens3 = (queenCount: number) => {
     if (queenCount < 1) return { matrix: [], converted: [] }
@@ -238,7 +239,7 @@ class Convert {
     return { matrix: nQueenMatrix, converted: nodes };
   }
 
-  toNQueens = (solutions: Set<number>[]) => {
+  toNQueens = (solutions: Set<number>[], format: ('.Q' | '01') = '.Q') => {
     const nQueensSolutions = [];
 
     if (!solutions.length) return [];
@@ -246,11 +247,11 @@ class Convert {
     const queenCount = solutions[0].size;
 
     for (const solution of solutions) {
-      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill('.'));
+      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill(format[0]));
       solution.forEach(v => {
         const col = v%queenCount;
         const row = (v-col)/queenCount;
-        temp[row][col] = 1;
+        temp[row][col] = format[1];
       });
       nQueensSolutions.push(temp);
     }
