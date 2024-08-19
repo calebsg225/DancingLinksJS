@@ -239,15 +239,15 @@ class Convert {
     return { matrix: nQueenMatrix, converted: nodes };
   }
 
-  toNQueens = (solutions: Set<number>[], format: ('.Q' | '01') = '.Q') => {
-    const nQueensSolutions = [];
+  toNQueens = (solutions: Set<number>[], format: string) => {
+    const nQueensSolutions: string[][][] = [];
 
     if (!solutions.length) return [];
 
     const queenCount = solutions[0].size;
 
     for (const solution of solutions) {
-      const temp = Array.from(Array(queenCount), () => new Array(queenCount).fill(format[0]));
+      const temp: string[][] = Array.from(Array(queenCount), () => new Array(queenCount).fill(format[0]));
       solution.forEach(v => {
         const col = v%queenCount;
         const row = (v-col)/queenCount;

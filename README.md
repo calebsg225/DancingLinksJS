@@ -19,15 +19,11 @@ const matrix: (0 | 1)[][] = [
   [0, 0, 0, 0, 1, 0, 0]   // 6
 ];
 
-/* 
-DLXSolver.solveMatrix(
-  matrix: matrix of 1's and 0's,
-  solutionCount: limit the number of solutions to find. Default: */ Infinity /*,
-  secondaryItems: a Set containing column indices to exclude as primary items when running DLX. Default: */ new Set() /*
-)
-*/
-
-const solutions = DLXSolver.solveMatrix(matrix, 2);
+const solutions = DLXSolver.solveMatrix(
+  matrix, // [matrix]: matrix of 1's and 0's
+  2 // [solutionCount]: limit the number of solutions to find. Default: [Infinity]
+  // [secondaryItems]: a Set containing column indices to exclude as primary items when running DLX. Default: [new Set()]
+  );
 
 /* 
 DLXSolver.solveMatrix() outputs an array of Sets.
@@ -43,18 +39,23 @@ console.log(solutions); // [ {0, 4, 3}, {0, 5} ]
 
 ``` js
 
-const {
-  nQueenSolutions,
-  rawExactCoverMatrix
-}
+const { nQueenSolutions, rawExactCoverMatrix } = DLXSolver.solveNQueens(
+  8, // [queenCount]: number of queens, rows, and columns of the board
+  '.Q', // [solutionFormat]: formats the output string matrix. The first char is an empty board tile, the second char is where a queen has been placed
+  3 // [solutionCount]: limit the number of solutions to find. Default: [Infinity]
+  );
 
-const { nQueenSolutions, rawExactCoverMatrix } = DLXSolver.solveNQueens(8, '.Q', 3);
+/*
+
+*/
+
 for (let i = 0; i < nQueenSolutions.length; i++) {
   console.log(`Solution: ${i}`);
   for (const row of nQueenSolutions[i]) {
     console.log(row.join(''));
   }
 }
+
 console.log('Raw Extact Cover Matrix');
 for (const row of rawExactCoverMatrix) {
   console.log(row.join(''));

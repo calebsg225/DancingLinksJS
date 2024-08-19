@@ -2,8 +2,9 @@ import Convert from "./DLX/Convert";
 import DancingLinks from "./DLX/DLX";
 
 class DLXSolver {
-  DLX: DancingLinks;
-  Convert: Convert
+  private DLX: DancingLinks;
+  private Convert: Convert;
+
   constructor() {
     this.DLX = new DancingLinks();
     this.Convert = new Convert();
@@ -15,7 +16,8 @@ class DLXSolver {
     return solutions;
   }
 
-  solveNQueens = (queenCount: number, solutionFormat: ('.Q' | '01'), solutionCount: number = Infinity) => {
+  solveNQueens = (queenCount: number, solutionFormat: string, solutionCount: number = Infinity) => {
+    if (solutionFormat.length !== 2) throw new Error(`DLXSolver.solveNQueens(solutionFormat): solutionFormat must be 2 characters long`);
     const { matrix, converted } = this.Convert.fromNQueens3(queenCount);
     const solutions = this.DLX.find(converted, solutionCount);
     const nQueenSolutions = this.Convert.toNQueens(solutions, solutionFormat);
