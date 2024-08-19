@@ -21,6 +21,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   const solutionCount = 2; // [OPTIONAL] limit the number of solutions to fins. Default: [Infinity]
   const secondaryItems = new Set(); // [OPTIONAL] a Set containing column indices to exclude as primary items when running DLX. Default: [new Set()].
   ```
+  ** uses of secondaryItems will be demonstrated later
 - Main Function
   ``` js
   const solutions = DLXSolver.solveMatrix(matrix, solutionCount, secondaryItems);
@@ -53,14 +54,14 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   ```
 - Function Output:
   ``` js
-  for (let i = 0; i < nQueenSolutions.length; i++) {
-    console.log(`Solution: ${i}`);
-    for (const row of nQueenSolutions[i]) {
+  nQueenSolutions.forEach((solution, i) => {
+    console.log(`Solution ${i}:`);
+    for (const row of solution) {
       console.log(row.join(' '));
     }
-  }
+  });
   /*
-    Solution: 0
+    Solution 0:
     _ _ _ _ _ _ _ Q
     _ _ Q _ _ _ _ _
     Q _ _ _ _ _ _ _
@@ -69,7 +70,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
     _ _ _ _ Q _ _ _
     _ _ _ _ _ _ Q _
     _ _ _ Q _ _ _ _
-    Solution: 1
+    Solution 1:
     _ _ _ _ _ _ _ Q
     _ _ _ Q _ _ _ _
     Q _ _ _ _ _ _ _
@@ -78,7 +79,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
     _ Q _ _ _ _ _ _
     _ _ _ _ _ _ Q _
     _ _ _ _ Q _ _ _
-    Solution: 2
+    Solution 2:
     _ _ _ _ _ _ _ Q
     _ Q _ _ _ _ _ _
     _ _ _ Q _ _ _ _
