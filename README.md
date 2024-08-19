@@ -5,6 +5,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
 
 - [Matrices](#matrices)
 - [NQueens](#nqueens)
+- [Sudoku](#sudoku)
 
 ### Matrices
 - Input Variables
@@ -207,4 +208,18 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
     000000011000000000000100000000000000000001
     100000001000000000000010000000000000000000
   */
+  ```
+### Sudoku
+  ** currently only works with normal 9x9 sudoku boards due to input oversight, will fix
+- Input Variables
+  ``` js
+  ```
+- Main Function
+  ``` js
+  ```
+- Output Variables
+  ``` js
+  ```
+- Function Output
+  ``` js
   ```
