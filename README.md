@@ -4,12 +4,13 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
 ## Usage
 
 - [Matrices](#matrices)
+  - [Secondary Items](#matrices-secondary-items)
 - [NQueens](#nqueens)
 - [Sudoku](#sudoku)
 
 ### Matrices
 - Input Variables
-  ``` js
+  ``` ts
   const matrix: (0 | 1)[][] = [ // matrix of 1's and 0's to solve
     [0, 0, 1, 0, 1, 0 ,0],  // 0
     [1, 0, 0, 1, 0, 0, 1],  // 1
@@ -24,37 +25,51 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   ```
   ** uses of secondaryItems will be demonstrated later
 - Main Function
-  ``` js
+  ``` ts
   const solutions = DLXSolver.solveMatrix(matrix, solutionCount, secondaryItems);
   ```
 - Output Variables
-  ``` js
+  ``` ts
   solutions // an array of Sets. Each Set is a solution, where each digit in the Set is a row index making up that solution.
   ```
 - Function Output:
-  ``` js
+  ``` ts
   console.log(solutions); // [ {0, 4, 3}, {0, 5} ]
   ```
+
+  #### Matrices Secondary Items
+  - Input Variables
+    ``` ts
+    ```
+  - Main Function
+    ``` ts
+    ```
+  - Output Variables
+    ``` ts
+    ```
+  - Function Output
+    ``` ts
+    ```
 
 ### NQueens
 
 - Input Variables:
-  ``` js
+  ``` ts
   const queenCount = 8; // number of queens, rows, and columns of the board
   const solutionFormat = '_Q'; // formats the output string matrices. The first char represents an empty board tile, the second char represents queen placements
   const solutionCount = 3; // [OPTIONAL] limit the number of solutions to find. Default: [Infinity]
   ```
 - Main Function:
-  ``` js
+  ``` ts
   const {nQueenSolutions, rawExactCoverMatrix} = DLXSolver.solveNQueens(queenCount, solutionFormat, solutionCount);
   ```
 - Output Variables:
-  ``` js
+  ``` ts
   nQueensSolutions // array of string matrices where each matrix is a different solution. Formated with [solutionFormat]
   rawExactCoverMatrix // the raw matrix of 1's and 0's representing the exact cover problem inputed into DLX
   ```
 - Function Output:
-  ``` js
+  ``` ts
   nQueenSolutions.forEach((solution, i) => {
     console.log(`Solution ${i}:`);
     for (const row of solution) {
@@ -212,14 +227,14 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
 ### Sudoku
   ** currently only works with normal 9x9 sudoku boards due to input oversight, will fix
 - Input Variables
-  ``` js
+  ``` ts
   ```
 - Main Function
-  ``` js
+  ``` ts
   ```
 - Output Variables
-  ``` js
+  ``` ts
   ```
 - Function Output
-  ``` js
+  ``` ts
   ```

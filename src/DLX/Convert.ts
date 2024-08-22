@@ -3,7 +3,7 @@ import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/
 class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
-  // primary items MUST be put to the far left
+  // primary items MUST be put to the far left ?
   fromMatrix = (matrix: (0|1)[][], secondaryItems: Set<number> = new Set()): NodeTypes[] => {
     if (!this.verifyMatrix(matrix)) return [];
     const itemCount = matrix[0].length; // number of columns in the initial matrix
@@ -101,68 +101,6 @@ class Convert {
 
     }
     return langfordPairs;
-  }
-  
-  fromNQueens = (queenCount: number): { matrix: (1|0)[][], converted: NodeTypes[] } => {
-    if (queenCount < 1) return { matrix: [], converted: [] }
-    const nQueenMatrix: (0|1)[][] = [];
-
-    const diagCount = 2*queenCount - 3;
-
-    for (let row = 0; row < queenCount; row++) {
-      for (let col = 0; col < queenCount; col++) {
-        const temp = new Array(2*queenCount + 2*diagCount).fill(0);
-        const lDiag = col - row + queenCount - 2; // \
-        const rDiag = col + row - 1; // /
-        temp[col] = 1;
-        temp[queenCount + row] = 1;
-        if (lDiag >= 0 && lDiag < diagCount) temp[2*queenCount + lDiag] = 1;
-        if (rDiag >= 0 && rDiag < diagCount) temp[2* queenCount + diagCount + rDiag] = 1;
-
-        nQueenMatrix.push(temp);
-      }
-    }
-
-    const secondaryItems: Set<number> = new Set();
-    for (let i = 2*queenCount + 1; i <= nQueenMatrix[0].length; i++) secondaryItems.add(i);
-
-    const converted = this.fromMatrix(nQueenMatrix, secondaryItems);
-
-    return { matrix: nQueenMatrix, converted: converted };
-
-  }
-
-  // generate rows and columns using 'organ-pipe' order for primary items
-  // results a noticeable speed increase for larger queen count values
-  fromNQueens2 = (queenCount: number) => {
-    if (queenCount < 1) return { matrix: [], converted: [] }
-    const nQueenMatrix: (0|1)[][] = [];
-
-    const half = Math.floor(queenCount/2);
-    const diagCount = 2*queenCount - 3;
-
-    for (let row = 0; row < queenCount; row++) {
-      for (let col = 0; col < queenCount; col++) {
-        const row2 = half + (row%2 ? -Math.floor((row+1)/2) : Math.floor((row+1)/2));
-        const col2 = half + (col%2 ? -Math.floor((col+1)/2) : Math.floor((col+1)/2));
-        const temp = new Array(2*queenCount + 2*diagCount).fill(0);
-        const lDiag = col - row + queenCount - 2; // \
-        const rDiag = col + row - 1; // /
-        temp[col2] = 1;
-        temp[queenCount + row2] = 1;
-        if (lDiag >= 0 && lDiag < diagCount) temp[2*queenCount + lDiag] = 1;
-        if (rDiag >= 0 && rDiag < diagCount) temp[2* queenCount + diagCount + rDiag] = 1;
-
-        nQueenMatrix.push(temp);
-      }
-    }
-
-    const secondaryItems: Set<number> = new Set();
-    for (let i = 2*queenCount + 1; i <= nQueenMatrix[0].length; i++) secondaryItems.add(i);
-
-    const converted = this.fromMatrix(nQueenMatrix, secondaryItems);
-
-    return { matrix: nQueenMatrix, converted: converted };
   }
 
   // 'organ-pipe' order
