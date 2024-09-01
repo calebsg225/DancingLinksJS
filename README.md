@@ -15,7 +15,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
     [0, 0, 1, 0, 1, 0 ,0],  // 0
     [1, 0, 0, 1, 0, 0, 1],  // 1
     [0, 1, 1, 0, 0, 1, 0],  // 2
-    [1, 0, 0, 1, 0, 1, 0],  // 3 commented row indices
+    [1, 0, 0, 1, 0, 1, 0],  // 3 row indices
     [0, 1, 0, 0, 0, 0, 1],  // 4
     [1, 1, 0, 1, 0, 1, 1],  // 5
     [0, 0, 0, 0, 1, 0, 0]   // 6
@@ -23,7 +23,6 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   const solutionCount = 2; // [OPTIONAL] limit the number of solutions to fins. Default: [Infinity]
   const secondaryItems = new Set(); // [OPTIONAL] a Set containing column indices to exclude as primary items when running DLX. Default: [new Set()].
   ```
-  ** uses of secondaryItems will be demonstrated later
 - Main Function
   ``` ts
   const solutions = DLXSolver.solveMatrix(matrix, solutionCount, secondaryItems);
@@ -38,17 +37,42 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   ```
 
   #### Matrices Secondary Items
+  While **Primary** columns must be covered *exactly* once, **Secondary** columns must be covered *at most* once. By default, all columns are primary.
   - Input Variables
     ``` ts
+    const matrix: (0 | 1)[][] = [
+    // 0  1  2  3      column indices
+      [0, 0, 0, 1],
+      [1, 1, 0, 0],
+      [1, 0, 1, 0],
+      [0, 0, 1, 1]
+    ];
+
+    const secondaryItems = new Set([1]);
     ```
   - Main Function
     ``` ts
-    ```
-  - Output Variables
-    ``` ts
+    const solutions = DLXSolver.solveMatrix(matrix, Infinity, secondaryItems);
     ```
   - Function Output
     ``` ts
+    solutions.forEach((solution, i) => {
+      console.log(`~~~ Solution ${i}:`, solution);
+      solution.forEach((v) => {
+        console.log(matrix[v]);
+      });
+    });
+
+    /*
+      ~~~ Solution 0: Set(2) { 1, 3 }
+      [ 1, 1, 0, 0 ]
+      [ 0, 0, 1, 1 ]
+      ~~~ Solution 1: Set(2) { 2, 0 }
+      [ 1, 0, 1, 0 ]
+      [ 0, 0, 0, 1 ]
+    */
+
+    // Setting column 1 as a Secondary column allows { 2, 0 } to be a solution.
     ```
 
 ### NQueens

@@ -3,7 +3,6 @@ import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/
 class Convert {
 
   // converts matrix of 1's and 0's to dlx data structure
-  // primary items MUST be put to the far left ?
   fromMatrix = (matrix: (0|1)[][], secondaryItems: Set<number> = new Set()): NodeTypes[] => {
     if (!this.verifyMatrix(matrix)) return [];
     const itemCount = matrix[0].length; // number of columns in the initial matrix
@@ -19,7 +18,7 @@ class Convert {
     // primary nodes point to the previous node on the left, 0 on the right until changed
     // secondary nodes point to themselves
     for (let i = 1; i <= itemCount; i++) {
-      if (secondaryItems.has(i)) {
+      if (secondaryItems.has(i-1)) {
         nodes.push(new HeaderNode(i, i, i, i));
         continue;
       }
