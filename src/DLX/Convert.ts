@@ -197,7 +197,7 @@ class Convert {
 
   // converts sudoku board from a string of dash-seperated integers to NodeTypes[]
   // string.length === n^4, 2 <= n <= 5
-  fromSudokuString = (sudokuBoard: string): { matrix: (0|1)[][], converted: NodeTypes[] } => {
+  fromSudoku = (sudokuBoard: string): { matrix: (0|1)[][], converted: NodeTypes[] } => {
 
     const sudokuCreateRow = (n: number, t: number, digit: number, i: number): (0|1)[] => {
       const res = new Array(n**2 * 4).fill(0);
@@ -278,6 +278,7 @@ class Convert {
         }
       }
     }
+    nodes.push(new SpacerNode(prevSpacer+1, nodes.length)); // create final [spacer] node
     return { matrix: sudokuMatrix, converted: nodes};
   }
 
@@ -285,6 +286,7 @@ class Convert {
   // row.count === col.count, row.count === n^2, 2 <= n <= 5
   fromSudokuMatrix = (sudokuBoard: number[][]) => {}
 
+  // TODO: make more format-friendly
   toSudoku = (solutions: Set<number>[]) => {
     if (!solutions.length) return [];
     const sudokuSolutions: string[] = [];
