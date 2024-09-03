@@ -10,7 +10,6 @@ class Convert {
     const nodes: NodeTypes[] = [];
     // create [first] [spacer] node pointing to itself
     nodes.push(new FirstNode(0, 0));
-    // create set of all secondary items
 
     let prevHeader = 0;
 
@@ -196,42 +195,90 @@ class Convert {
     return nQueensSolutions;
   }
 
-  // converts sudoku board in the form of a string consisting of chars 1-9 as well as any spacers
+  // converts sudoku board from a string of dash-seperated integers to NodeTypes[]
   // string.length === n^4, 2 <= n <= 5
   fromSudokuString = (sudokuBoard: string): { matrix: (0|1)[][], converted: NodeTypes[] } => {
+
+    const sudokuCreateRow = (n: number, t: number, digit: number, i: number): (0|1)[] => {
+      const res = new Array(n**2 * 4).fill(0);
+      const col = i%n;
+      const row = (i - col) / n;
+      const indexArr: number[] = [
+        i, // box index
+        n**2 + row*n + digit - 1, // row index
+        2 * n**2 + col*n + digit - 1, // col index
+        3 * n**2 + Math.floor(col/t) * n + Math.floor(row/t) * n*t + digit - 1 // block index
+      ];
+      for (const index of indexArr) {
+        // set exact cover matrix digits
+        res[index] = 1;
+
+        // set nodeTypes[] digits
+        nodes[nodes[index+1].upNode].downNode = nodes.length; // update [header] down pointer
+        nodes.push(new ItemNode(index+1, sudokuMatrix.length, nodes[index+1].upNode, index+1)); // add new [item] node
+        nodes[index+1].columnCount++; // increase [header] column count
+        nodes[index+1].upNode = nodes.length - 1; // update [header] up pointer
+      }
+      return res;
+    }
+
     const sudokuMatrix: (0|1)[][] = [];
 
-    const n = Math.sqrt(sudokuBoard.length);
+    const sudokuBoardArr = sudokuBoard.split('-');
+    const n = Math.sqrt(sudokuBoardArr.length);
     const t = Math.sqrt(n);
+    // TODO: error check here
+
+    const nodes: NodeTypes[] = [];
+
+    // create [first] [spacer] node pointing to itself
+    nodes.push(new FirstNode(0, 0));
 
     const digits = new Set();
-    for (let i = 1; i <= n; i++) digits.add(i);
 
-    for (let i = 0; i < sudokuBoard.length; i++) {
+    let prevHeader = 0;
+
+    // create all [header] nodes, all primary
+    for (let i = 1; i <= n**2 * 4; i++) {
+      nodes[prevHeader].rightNode = i;
+      nodes.push(new HeaderNode(prevHeader, 0, i, i));
+      prevHeader = i;
+      if (i <= n) digits.add(i); // also create set of allowed digits in the same loop
+    }
+    // make the [first] node points to the last primary [header] node
+    nodes[0].leftNode = prevHeader;
+
+    let prevSpacer = 0;
+
+    for (let i = 0; i < sudokuBoardArr.length; i++) {
       const char = sudokuBoard[i];
-      if (digits.has(+char)) {
+      if (+char && digits.has(+char)) {
+        // char is a valid digit
         for  (let j = 1; j <= n; j++) {
-          if (+char === j) sudokuMatrix.push(this.sudokuCreateRow(n, t, +char, i));
-          else sudokuMatrix.push(new Array(n**2 * 4).fill(0));
+          // the row to add 1's to depends on the digit
+          // create new [spacer] node
+          nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
+          prevSpacer = nodes.length - 1;
+          if (+char === j) {
+            sudokuMatrix.push(sudokuCreateRow(n, t, +char, i));
+          }
+          else {
+            sudokuMatrix.push(new Array(n**2 * 4).fill(0));
+          };
+          nodes[prevSpacer].downNode = nodes.length - 1; // update [spacer] down pointer to last [item] node in previous option
         }
       } else {
+        // char is not a valid digit, therefore it is considered blank
         for (let j = 1; j <= n; j++) {
-          sudokuMatrix.push(this.sudokuCreateRow(n, t, j, i));
+          // create new [spacer] node
+          nodes.push(new SpacerNode(prevSpacer ? prevSpacer + 1 : nodes.length, nodes.length));
+          prevSpacer = nodes.length - 1;
+          sudokuMatrix.push(sudokuCreateRow(n, t, j, i));
+          nodes[prevSpacer].downNode = nodes.length - 1; // update [spacer] down pointer to last [item] node in previous option
         }
       }
     }
-    return { matrix: sudokuMatrix, converted: this.fromMatrix(sudokuMatrix)};
-  }
-
-  private sudokuCreateRow = (n: number, t: number, digit: number, i: number): (0|1)[] => {
-    const res = new Array(n**2 * 4).fill(0);
-    const col = i%n;
-    const row = (i - col) / n;
-    res[i] = 1;
-    res[n**2 + row*n + digit - 1] = 1;
-    res[2 * n**2 + col*n + digit - 1] = 1;
-    res[3 * n**2 + Math.floor(col/t) * n + Math.floor(row/t) * n*t + digit - 1] = 1;
-    return res;
+    return { matrix: sudokuMatrix, converted: nodes};
   }
 
   // converts sudoku board in the form of a matrix of digits 0-9

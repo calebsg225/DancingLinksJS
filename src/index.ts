@@ -23,6 +23,8 @@ class DLXSolver {
     const nQueenSolutions = this.Convert.toNQueens(solutions, solutionFormat);
     return { nQueenSolutions, rawExactCoverMatrix: matrix };
   }
+
+  solveSudoku = (sudokuBoard: any, format: string) => {}
   
 }
 
