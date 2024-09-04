@@ -314,6 +314,32 @@ class Convert {
     return true;
   }
 
+  verifySudokuSolution = (rawPuzzle: string): boolean => {
+    const puzzle = rawPuzzle.split('-');
+    const n = Math.sqrt(puzzle.length);
+    const t = Math.sqrt(n);
+
+    const rows = Array.from(Array(n), () => new Set<number>());
+    const cols = Array.from(Array(n), () => new Set<number>());
+    const grids = Array.from(Array(n), () => new Set<number>());
+
+    for (let i = 0; i < puzzle.length; i++) {
+      // if any digit is 0, the puzzle is not solved
+      if (!puzzle[i].length) return false
+
+      const col = i%n;
+      const row = (i-col)/n;
+      const grid = t*Math.floor(row/t) + Math.floor(col/t);
+
+      // checks to see that new digit is unique in its row, column, and subgrid
+      if (rows[row].size === rows[row].add(+puzzle[i]).size) return false;
+      if (cols[col].size === cols[col].add(+puzzle[i]).size) return false;
+      if (grids[grid].size === grids[grid].add(+puzzle[i]).size) return false;
+    }
+
+    return true;
+  }
+
 }
 
 export default Convert;
