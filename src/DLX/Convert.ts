@@ -251,7 +251,7 @@ class Convert {
     let prevSpacer = 0;
 
     for (let i = 0; i < sudokuBoardArr.length; i++) {
-      const char = sudokuBoard[i];
+      const char = sudokuBoardArr[i];
       if (+char && digits.has(+char)) {
         // char is a valid digit
         for  (let j = 1; j <= n; j++) {
@@ -279,12 +279,9 @@ class Convert {
       }
     }
     nodes.push(new SpacerNode(prevSpacer+1, nodes.length)); // create final [spacer] node
+
     return { matrix: sudokuMatrix, converted: nodes};
   }
-
-  // converts sudoku board in the form of a matrix of digits 0-9
-  // row.count === col.count, row.count === n^2, 2 <= n <= 5
-  fromSudokuMatrix = (sudokuBoard: number[][]) => {}
 
   // TODO: make more format-friendly
   toSudoku = (solutions: Set<number>[]) => {
