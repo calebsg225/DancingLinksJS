@@ -27,7 +27,7 @@ class DLXSolver {
   solveSudoku = (sudokuBoard: any, format: string, solutionCount: number = Infinity) => {
     // TODO: create seperate formatting check/conversion functions
     if (!format.length && typeof(sudokuBoard) === typeof('')) {
-      const { matrix, converted } = this.Convert.fromSudoku(sudokuBoard.split('').join('-'));
+      const { matrix, converted } = this.Convert.fromSudoku(sudokuBoard);
       const solutions = this.DLX.find(converted, solutionCount);
       const sudokuSolutions = this.Convert.toSudoku(solutions);
       return { sudokuSolutions, rawExactCoverMatrix: matrix };

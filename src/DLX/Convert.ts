@@ -295,7 +295,7 @@ class Convert {
         const i = Math.floor(option/n);
         sudokuSolution[i] = option%n + 1;
       }
-      sudokuSolutions.push(sudokuSolution.join(''));
+      sudokuSolutions.push(sudokuSolution.join('-'));
     }
 
     return sudokuSolutions;
