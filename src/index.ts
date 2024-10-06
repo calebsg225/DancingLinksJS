@@ -1,13 +1,17 @@
-import Convert from "./DLX/Convert";
 import DancingLinks from "./DLX/DLX";
+import Convert from "./DLX/Convert";
+import Format from "./DLX/Format";
+import { SudokuInputFormat } from "./types/FormatTypes";
 
 class DLXSolver {
   private DLX: DancingLinks;
   private Convert: Convert;
+  private Format: Format;
 
   constructor() {
     this.DLX = new DancingLinks();
     this.Convert = new Convert();
+    this.Format = new Format();
   }
 
   solveMatrix = (matrix: (0 | 1)[][], solutionCount: number = Infinity, secondaryItems: Set<number> = new Set()) => {
@@ -24,14 +28,12 @@ class DLXSolver {
     return { nQueenSolutions, rawExactCoverMatrix: matrix };
   }
 
-  solveSudoku = (sudokuBoard: any, format: string, solutionCount: number = Infinity) => {
-    // TODO: create seperate formatting check/conversion functions
-    if (!format.length && typeof(sudokuBoard) === typeof('')) {
-      const { matrix, converted } = this.Convert.fromSudoku(sudokuBoard);
-      const solutions = this.DLX.find(converted, solutionCount);
-      const sudokuSolutions = this.Convert.toSudoku(solutions);
-      return { sudokuSolutions, rawExactCoverMatrix: matrix };
-    }
+  solveSudoku = (sudokuBoard: any, format: SudokuInputFormat, solutionCount: number = Infinity) => {
+    const formatedSudokuBoard = this.Format.sudoku(sudokuBoard, format);
+    const { matrix, converted } = this.Convert.fromSudoku(formatedSudokuBoard);
+    const solutions = this.DLX.find(converted, solutionCount);
+    const sudokuSolutions = this.Convert.toSudoku(solutions);
+    return { sudokuSolutions, rawExactCoverMatrix: matrix };
   }
   
 }

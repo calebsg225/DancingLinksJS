@@ -1,5 +1,5 @@
 import MinHeap from "../utils/MinHeap";
-import { NodeTypes } from "../type/NodeTypes";
+import { NodeTypes } from "../types/NodeTypes";
 
 class DancingLinks {
   private nodes: NodeTypes[];

@@ -1,4 +1,4 @@
-import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../type/NodeTypes";
+import { FirstNode, ItemNode, SpacerNode, HeaderNode, NodeTypes } from "../types/NodeTypes";
 
 class Convert {
 
@@ -227,7 +227,7 @@ class Convert {
     const sudokuBoardArr = sudokuBoard.split('-');
     const n = Math.sqrt(sudokuBoardArr.length);
     const t = Math.sqrt(n);
-    // TODO: error check here
+    if (!(new Set([2,3,4,5]).has(t))) throw Error(`${sudokuBoard}\nThe inputed sudoku board is not valid!`);
 
     const nodes: NodeTypes[] = [];
 
@@ -300,10 +300,6 @@ class Convert {
 
     return sudokuSolutions;
   }
-
-  private verifySudokuString = (sudokuBoardString: string) => {}
-
-  private verifySudokuMatrix = (sudokuBoardMatrix: number[][]) => {}
 
   private verifyMatrix = (matrix: (0|1)[][]): boolean => {
     if (!matrix.length) return false;
