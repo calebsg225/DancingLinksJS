@@ -6,8 +6,7 @@ type SudokuInputFormat = (
   'digits string' | // '8734000' ...
   'digits array' | // [8, 3, 4, 3] ...
   'digits matrix' | // [[2, 5, 4], [0, 6, 0]] ...
-  'char-seperated hexa-converted string' | // '1-3-0-A-C-8' ...
-  'hexa-converted string' | // '65FGS4' ...
+  'hexa-converted string' | // '6-5FGS-04' ...
   'letters-only string' // 'SDMBNL---HG-' ...
 );
 */
@@ -25,19 +24,49 @@ class Format {
           if (!digits.has(newSudoku[i])) newSudoku[i] = '-';
         }
         return newSudoku.join('');
-        break;
       case 'digits string':
-        break;
+        if (typeof(sudoku) !== typeof('')) throw Error('The input format is incorrect.');
+        return sudoku.split('').join('-');
       case 'digits array': 
-        break;
-      case 'digits matrix': 
-        break;
-      case 'char-seperated hexa-converted string':
-        break;
-      case 'hexa-converted string':
-        break;
+        if (typeof(sudoku) !== typeof([])) throw Error('The input format is incorrect.');
+        return sudoku.join('-');
+      case 'digits matrix':
+        if (typeof(sudoku) !== typeof([])) throw Error('The input format is incorrect.'); 
+        const sudokuMatrix: (number | string)[][] = sudoku;
+        const formatedSudokuMatrix: string[] = [];
+        for (const row of sudokuMatrix) {
+          formatedSudokuMatrix.push(row.join('-'));
+        }
+        return formatedSudokuMatrix.join('');
+      case 'double-digit-letter-converted string':
+        if (typeof(sudoku) !== typeof('')) throw Error('The input format is incorrect.');
+        const lettersConversion = new Set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''));
+        const doubleSudoku: string = sudoku;
+        const formatedDoubleSudoku: string[] = [];
+        for (const double of doubleSudoku) {
+          if (+double) {
+            formatedDoubleSudoku.push(double);
+            continue;
+          };
+          if (lettersConversion.has(double)) {
+            formatedDoubleSudoku.push(`${double.toLowerCase().charCodeAt(0) - 87}`);
+            continue;
+          }
+          formatedDoubleSudoku.push('0');
+        }
+        return formatedDoubleSudoku.join('-');
       case 'letters-only string':
-        break;
+        if (typeof(sudoku) !== typeof('')) throw Error('The input format is incorrect.');
+        const lettersSudoku: string = sudoku;
+        const formatedLettersSudoku: string[] = [];
+        for (const letter of lettersSudoku) {
+          if (lettersConversion.has(letter)) {
+            formatedLettersSudoku.push(`${letter.toLowerCase().charCodeAt(0) - 96}`);
+            continue;
+          }
+          formatedLettersSudoku.push('0');
+        }
+        return formatedLettersSudoku.join('-');
       default: 
         break;
     }
