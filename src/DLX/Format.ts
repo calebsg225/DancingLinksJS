@@ -96,7 +96,7 @@ class Format {
           for (let i = 0; i < n; i++) {
             const temp: string[] = [];
             for (let j = 0; j < n; j++) {
-              temp.push(sudokuSolution[i][j]);
+              temp.push(sudokuSolution[i*n + j]);
             }
             matrixRes.push(temp);
           }
