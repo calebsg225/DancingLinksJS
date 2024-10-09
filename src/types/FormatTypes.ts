@@ -1,4 +1,4 @@
-type SudokuInputFormat = (
+type SudokuFormat = (
   '1-11' | // '3-7-3-0-0' ...
   '111' | // '8734000' ...
   '[1,11]' | // [8, 3, 4, 3] ...
@@ -7,13 +7,4 @@ type SudokuInputFormat = (
   'AK' // 'SDMBNL---HG-' ...
 );
 
-/*
-'1-11'
-'111'
-'[1,11]'
-'[[1],[11]]'
-'1B'
-'AK'
-*/
-
-export { SudokuInputFormat };
+export { SudokuFormat };

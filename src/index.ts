@@ -1,7 +1,7 @@
 import DancingLinks from "./DLX/DLX";
 import Convert from "./DLX/Convert";
 import Format from "./DLX/Format";
-import { SudokuInputFormat } from "./types/FormatTypes";
+import { SudokuFormat } from "./types/FormatTypes";
 
 class DLXSolver {
   private DLX: DancingLinks;
@@ -28,11 +28,11 @@ class DLXSolver {
     return { nQueenSolutions, rawExactCoverMatrix: matrix };
   }
 
-  solveSudoku = (sudokuBoard: any, format: SudokuInputFormat, solutionCount: number = Infinity) => {
-    const formatedSudokuBoard = this.Format.sudoku(sudokuBoard, format);
+  solveSudoku = (sudokuBoard: any, inputFormat: SudokuFormat, outputFormat: SudokuFormat ,solutionCount: number = Infinity) => {
+    const formatedSudokuBoard = this.Format.sudokuInput(sudokuBoard, inputFormat);
     const { matrix, converted } = this.Convert.fromSudoku(formatedSudokuBoard);
     const solutions = this.DLX.find(converted, solutionCount);
-    const sudokuSolutions = this.Convert.toSudoku(solutions);
+    const sudokuSolutions = this.Format.sudokuOutput(solutions, outputFormat)
     return { sudokuSolutions, rawExactCoverMatrix: matrix };
   }
   
