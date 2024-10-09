@@ -7,6 +7,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   - [Secondary Items](#matrices-secondary-items)
 - [NQueens](#nqueens)
 - [Sudoku](#sudoku)
+  - [Formatting Options](#sudoku-formatting-options)
 
 ### Matrices
 - Input Variables
@@ -249,10 +250,25 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   */
   ```
 ### Sudoku
-  ** currently only works with normal 9x9 sudoku boards due to input oversight, will fix
+  
 - Input Variables
   ``` ts
+  const SudokuBoard = '008509600760000094000000000000040000090802030800000002070396020009020400030000050' // sudoku puzzle in one of the allowed input formats
+  const inputFormat = '111' // format of the inputed sudoku puzzle
+  const outputFormat = '111' // format of the outputed solution(s)
+  const solutionCount = Infinity // [OPTIONAL] max number of solutions DLX will try to find
   ```
+  #### Sudoku Formatting Options
+
+  | Format | Description | Example |
+  | ---- | ---- | ----: |
+  | `'111'` | string of unseperated digits | `'008509 ...'` |
+  | `'1-11'` | string of character-seperated digits | `'0-0-8-5-0-9- ...'` |
+  | `'[1,11]'` | array of digits in string form | `[ '0', '0', '8', '5', '0', '9', ... ]` |
+  | `'[[1],[11]]'` | 2d array of digits in string form | `[ [ '0', '0', '8', '5', '0', '9', ... ], [ ... ], ... ]` |
+  | `'1B'` | string where digits greater than 9 are replaced with letters (for 16x16 and up) | `'00AB709 ...'` |
+  | `'AK'` | string whereall positive integers are replaced with letters (for 16x16 and up) | `'BA0JL00 ...'` |
+
 - Main Function
   ``` ts
   ```
