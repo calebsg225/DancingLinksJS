@@ -61,46 +61,46 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   ```
 
   ### Matrices Secondary Items
-    * While **Primary** items (columns) must be covered *exactly* once, **Secondary** items must be covered *at most* once. By default, all items are primary.
-      ``` ts
-      const matrix: (0 | 1)[][] = [
-      // 0  1  2  3      column indices
-        [0, 0, 0, 1],
-        [1, 1, 0, 0],
-        [1, 0, 1, 0],
-        [0, 0, 1, 1]
-      ];
-      ```
+  * While **Primary** items (columns) must be covered *exactly* once, **Secondary** items must be covered *at most* once. By default, all items are primary.
+    ``` ts
+    const matrix: (0 | 1)[][] = [
+    // 0  1  2  3      column indices
+      [0, 0, 0, 1],
+      [1, 1, 0, 0],
+      [1, 0, 1, 0],
+      [0, 0, 1, 1]
+    ];
+    ```
 
-      Here we set column 1 to be a secondary item:
-      ``` ts
-      const options: MatrixOptions = {
-        maxSolutionCount = Infinity,
-        secondaryItems = new set([1]), // setting column 1 to be secondary item
-      };
-      ```
+    Here we set column 1 to be a secondary item:
+    ``` ts
+    const options: MatrixOptions = {
+      maxSolutionCount = Infinity,
+      secondaryItems = new set([1]), // setting column 1 to be secondary item
+    };
+    ```
 
-      and run the solver with the new options:
-      ``` ts
-      const solutions = DLXSolver.solveMatrix(matrix, options);
-      ```
-      By setting column 1 to be a secondary item, {2, 0} is now a valid solution:
-      ``` ts
-      solutions.forEach((solution, i) => {
-        console.log(`~~~ Solution ${i}:`, solution);
-        solution.forEach((v) => {
-          console.log(matrix[v]);
-        });
+    and run the solver with the new options:
+    ``` ts
+    const solutions = DLXSolver.solveMatrix(matrix, options);
+    ```
+    By setting column 1 to be a secondary item, {2, 0} is now a valid solution:
+    ``` ts
+    solutions.forEach((solution, i) => {
+      console.log(`~~~ Solution ${i}:`, solution);
+      solution.forEach((v) => {
+        console.log(matrix[v]);
       });
-      ```
-      ``` console
-      ~~~ Solution 0: Set(2) { 1, 3 }
-      [ 1, 1, 0, 0 ]
-      [ 0, 0, 1, 1 ]
-      ~~~ Solution 1: Set(2) { 2, 0 }
-      [ 1, 0, 1, 0 ]
-      [ 0, 0, 0, 1 ]
-      ```
+    });
+    ```
+    ``` console
+    ~~~ Solution 0: Set(2) { 1, 3 }
+    [ 1, 1, 0, 0 ]
+    [ 0, 0, 1, 1 ]
+    ~~~ Solution 1: Set(2) { 2, 0 }
+    [ 1, 0, 1, 0 ]
+    [ 0, 0, 0, 1 ]
+    ```
 
 ### NQueens
 
