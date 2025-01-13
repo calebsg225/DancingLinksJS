@@ -10,7 +10,15 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   - [Formatting Options](#sudoku-formatting-options)
 
 ### Matrices
-- Input Variables
+- Matrix Options
+  ``` ts
+  type MatrixOptions = {
+    maxSolutionCount?: number, // limit the number of solutions DLX will find
+    secondaryItems?: Set<number>, // a Set of column indices to exclude as primary items when running DLX
+  };
+  ```
+- Usage
+  `matrix` represents the exact cover problem to be solved with dlx:
   ``` ts
   const matrix: (0 | 1)[][] = [ // matrix of 1's and 0's to solve
     [0, 0, 1, 0, 1, 0 ,0],  // 0
@@ -21,60 +29,73 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
     [1, 1, 0, 1, 0, 1, 1],  // 5
     [0, 0, 0, 0, 1, 0, 0]   // 6
   ];
-  const solutionCount = 2; // [OPTIONAL] limit the number of solutions to fins. Default: [Infinity]
-  const secondaryItems = new Set(); // [OPTIONAL] a Set containing column indices to exclude as primary items when running DLX. Default: [new Set()].
   ```
-- Main Function
+
+  Optionally override default options:
   ``` ts
-  const solutions = DLXSolver.solveMatrix(matrix, solutionCount, secondaryItems);
+  const options: MatrixOptions = {
+    maxSolutionCount = 2 // default is 1
+  };
   ```
-- Output Variables
+
+  solve:
   ``` ts
-  solutions // an array of Sets. Each Set is a solution, where each digit in the Set is a row index making up that solution.
+  const solutions = DLXSolver.solveMatrix(
+      matrix, 
+      options
+  );
   ```
-- Function Output:
+
+  Each solution is a Set of row indices that make up the solution:
   ``` ts
-  console.log(solutions); // [ {0, 4, 3}, {0, 5} ]
+  console.log(solutions);
+  ```
+  ``` console
+  [ {0, 4, 3}, {0, 5} ]
   ```
 
   #### Matrices Secondary Items
-  While **Primary** columns must be covered *exactly* once, **Secondary** columns must be covered *at most* once. By default, all columns are primary.
-  - Input Variables
-    ``` ts
-    const matrix: (0 | 1)[][] = [
-    // 0  1  2  3      column indices
-      [0, 0, 0, 1],
-      [1, 1, 0, 0],
-      [1, 0, 1, 0],
-      [0, 0, 1, 1]
-    ];
+  While **Primary** items (columns) must be covered *exactly* once, **Secondary** items must be covered *at most* once. By default, all items are primary.
 
-    const secondaryItems = new Set([1]);
-    ```
-  - Main Function
-    ``` ts
-    const solutions = DLXSolver.solveMatrix(matrix, Infinity, secondaryItems);
-    ```
-  - Function Output
-    ``` ts
-    solutions.forEach((solution, i) => {
-      console.log(`~~~ Solution ${i}:`, solution);
-      solution.forEach((v) => {
-        console.log(matrix[v]);
-      });
+  ``` ts
+  const matrix: (0 | 1)[][] = [
+  // 0  1  2  3      column indices
+    [0, 0, 0, 1],
+    [1, 1, 0, 0],
+    [1, 0, 1, 0],
+    [0, 0, 1, 1]
+  ];
+  ```
+
+  Here we set column 1 to be a secondary item:
+  ``` ts
+  const options: MatrixOptions = {
+    maxSolutionCount = Infinity,
+    secondaryItems = new set([1]), // setting column 1 to be secondary item
+  };
+  ```
+
+  and run the solver with the new options:
+  ``` ts
+  const solutions = DLXSolver.solveMatrix(matrix, options);
+  ```
+  By setting column 1 to be a secondary item, {2, 0} is now a valid solution:
+  ``` ts
+  solutions.forEach((solution, i) => {
+    console.log(`~~~ Solution ${i}:`, solution);
+    solution.forEach((v) => {
+      console.log(matrix[v]);
     });
-
-    /*
-      ~~~ Solution 0: Set(2) { 1, 3 }
-      [ 1, 1, 0, 0 ]
-      [ 0, 0, 1, 1 ]
-      ~~~ Solution 1: Set(2) { 2, 0 }
-      [ 1, 0, 1, 0 ]
-      [ 0, 0, 0, 1 ]
-    */
-
-    // Setting column 1 as a Secondary column allows { 2, 0 } to be a solution.
-    ```
+  });
+  ```
+  ``` console
+  ~~~ Solution 0: Set(2) { 1, 3 }
+  [ 1, 1, 0, 0 ]
+  [ 0, 0, 1, 1 ]
+  ~~~ Solution 1: Set(2) { 2, 0 }
+  [ 1, 0, 1, 0 ]
+  [ 0, 0, 0, 1 ]
+  ```
 
 ### NQueens
 
