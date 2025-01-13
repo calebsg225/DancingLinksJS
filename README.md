@@ -61,12 +61,7 @@ Knuth's Dancing Links paper can be found [here](https://www.inf.ufrgs.br/~mrprit
   ```
 
   ### Matrices Secondary Items
-<<<<<<< HEAD
       * While **Primary** items (columns) must be covered *exactly* once, **Secondary** items must be covered *at most* once. By default, all items are primary.
-=======
-      While **Primary** items (columns) must be covered *exactly* once, **Secondary** items must be covered *at most* once. By default, all items are primary.
->>>>>>> 2a29b4c623b59c683e087cc54dfde06da1d5a987
-
       ``` ts
       const matrix: (0 | 1)[][] = [
       // 0  1  2  3      column indices
